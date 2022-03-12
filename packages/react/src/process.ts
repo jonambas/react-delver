@@ -1,16 +1,6 @@
-import type { Result, Config } from './index';
+import type { Result, ProcessedResult } from './index';
 
-type ProcessedItem = {
-  name: string;
-  count: number;
-  instances: Result[];
-};
-
-export default function processResults(results: Result[], config: Config) {
-  if (config.raw) {
-    return results;
-  }
-
+export default function processResults(results: Result[]): ProcessedResult[] {
   const processed = results.reduce((acc = [], item) => {
     const index = acc.findIndex((n) => n.name === item.name);
 
@@ -27,7 +17,7 @@ export default function processResults(results: Result[], config: Config) {
     });
 
     return acc;
-  }, [] as ProcessedItem[]);
+  }, [] as ProcessedResult[]);
 
   return processed;
 }

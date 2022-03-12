@@ -1,29 +1,40 @@
 import ts from 'typescript';
 import fs from 'fs';
 import { logMuted, logError } from '@delver/logger';
-import processResults from './process.js';
+import processResults from './process';
 
-export type Config = {
-  output: string;
-  include: string;
-  ignore: string[];
-  from: string[];
-  ignoreSubComponents?: boolean;
-  raw?: boolean;
+type Raw = {
+  raw: true;
 };
 
-type Props = {
+type NotRaw = {
+  raw?: false;
+};
+
+export type Config = {
+  from?: string[];
+  ignoreSubComponents?: boolean;
+};
+
+export type Props = {
   value: string | boolean | number;
   name: string;
 }[];
 
 export type Result = {
   name: string;
-  spread: boolean;
-  props: Props;
-  location: ts.LineAndCharacter & {
-    file: string;
+  spread?: boolean;
+  props?: Props;
+  count?: number;
+  location?: ts.LineAndCharacter & {
+    file?: string;
   };
+};
+
+export type ProcessedResult = {
+  name: string;
+  count: number;
+  instances: Result[];
 };
 
 type JSXNode = ts.Node & {
@@ -95,7 +106,7 @@ function shouldReport({
   }
 
   // Check if this component is in stored imports
-  if (!imports.some((i) => i.includes(name))) {
+  if (config.from && !imports.some((i) => i.includes(name))) {
     return false;
   }
 
@@ -184,9 +195,15 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
   }
 }
 
-export default function parseFiles(files: string[], config: Config) {
-  console.log(``);
+type ReturnType<T> = T extends Raw ? Result[] : ProcessedResult[];
+type ConfigArgument = (Config & Raw) | (Config & NotRaw);
+
+export default function parseFiles<T extends ConfigArgument>(
+  files: string[],
+  config: T
+): ReturnType<T> {
   logMuted(`Parsing ${files.length} files.`);
+  data.splice(0, data.length);
 
   try {
     files.forEach((file) => {
@@ -200,7 +217,11 @@ export default function parseFiles(files: string[], config: Config) {
 
     logMuted(`Found ${data.length} components.`);
 
-    return processResults(data, config);
+    if (config.raw) {
+      return data as ReturnType<T>;
+    }
+
+    return processResults(data) as ReturnType<T>;
   } catch (error) {
     logError(`${error}`);
     process.exit(1);
