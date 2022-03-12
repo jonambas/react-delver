@@ -1,13 +1,29 @@
 import ts from 'typescript';
 import fs from 'fs';
 import { logMuted, logError } from '@delver/logger';
+import processResults from './process.js';
 
-type Config = {
+export type Config = {
   output: string;
   include: string;
   ignore: string[];
   from: string[];
   ignoreSubComponents?: boolean;
+  raw?: boolean;
+};
+
+type Props = {
+  value: string | boolean | number;
+  name: string;
+}[];
+
+export type Result = {
+  name: string;
+  spread: boolean;
+  props: Props;
+  location: ts.LineAndCharacter & {
+    file: string;
+  };
 };
 
 type JSXNode = ts.Node & {
@@ -16,14 +32,6 @@ type JSXNode = ts.Node & {
     properties?: ts.JsxAttribute[];
   };
 };
-
-type Results = {
-  name: string;
-  spread: boolean;
-  location: ts.LineAndCharacter & {
-    file: string;
-  };
-}[];
 
 type Imports = string[];
 
@@ -95,7 +103,7 @@ function shouldReport({
 }
 
 // Storage
-const data: Results = [];
+const data: Result[] = [];
 
 function parse(source: ts.SourceFile, config: Config, file: string) {
   const { from } = config;
@@ -115,10 +123,10 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
     }
 
     if (shouldReport({ node, source, config, imports })) {
-      const [name, ...nameParts] = getComponentName(node, source).split('.');
+      const name = getComponentName(node, source);
       const props = node?.attributes?.properties || [];
       let value: string | number | boolean;
-      let toSave = [];
+      let toSave: Props = [];
       let spread = false;
 
       props.forEach((prop) => {
@@ -166,9 +174,8 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
 
       data.push({
         name,
-
         spread,
-        // props: toSave,
+        props: toSave,
         location: { file, ...getLoc(node, source) }
       });
     }
@@ -192,7 +199,7 @@ export default function parseFiles(files: string[], config: Config) {
 
     logMuted(`Found ${data.length} components.`);
 
-    return data;
+    return processResults(data, config);
   } catch (error) {
     logError(`${error}`);
     process.exit(1);

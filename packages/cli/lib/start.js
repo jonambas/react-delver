@@ -21,7 +21,7 @@ function start(config) {
     fs.writeFileSync(outputPath, JSON.stringify(result));
 
     const endTime = process.hrtime.bigint();
-    logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds`);
+    logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds.`);
     logMuted(`${outputPath}`);
   });
 }
