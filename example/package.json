@@ -10,7 +10,7 @@
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
   "dependencies": {
-    "@delver/cli": "0.0.1",
+    "@delver/cli": "../packages/cli",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

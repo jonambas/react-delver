@@ -2,8 +2,8 @@
 import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
-// import { parseFiles } from '@delver/react';
-// import { logMuted, logSuccess } from '@delver/logger';
+import parse from '@delver/react';
+import { logMuted, logSuccess } from '@delver/logger';
 
 function start(config) {
   const startTime = process.hrtime.bigint();
@@ -15,14 +15,14 @@ function start(config) {
       process.exit(1);
     }
 
-    // const result = parseFiles(files, rest);
-    // const outputPath = path.resolve(process.cwd(), config.output);
+    const result = parse(files, rest);
+    const outputPath = path.resolve(process.cwd(), config.output);
 
-    // fs.writeFileSync(outputPath, JSON.stringify(result));
+    fs.writeFileSync(outputPath, JSON.stringify(result));
 
     const endTime = process.hrtime.bigint();
-    // logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds`);
-    // logMuted(`${outputPath}`);
+    logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds`);
+    logMuted(`${outputPath}`);
   });
 }
 
