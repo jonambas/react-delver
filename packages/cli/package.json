@@ -1,5 +1,5 @@
 {
-  "name": "delver",
+  "name": "@delver/cli",
   "version": "0.0.3",
   "description": "",
   "type": "module",
@@ -18,5 +18,6 @@
     "fs-extra": "^10.0.1",
     "meow": "^10.1.2",
     "prettier": "^2.5.1"
-  }
+  },
+  "gitHead": "f30584752cfe6adf87d1c27b273ff51aad26aa01"
 }
