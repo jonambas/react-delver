@@ -1,0 +1,5 @@
+{
+  "output": "./dist/build.json",
+  "ignoreSubComponents": false,
+  "raw": true
+}

@@ -185,6 +185,7 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
 }
 
 export default function parseFiles(files: string[], config: Config) {
+  console.log(``);
   logMuted(`Parsing ${files.length} files.`);
 
   try {

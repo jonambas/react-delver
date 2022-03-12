@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import glob from 'glob';
 import parse from '@delver/react';
@@ -18,7 +18,7 @@ function start(config) {
     const result = parse(files, rest);
     const outputPath = path.resolve(process.cwd(), config.output);
 
-    fs.writeFileSync(outputPath, JSON.stringify(result));
+    fs.outputFileSync(outputPath, JSON.stringify(result));
 
     const endTime = process.hrtime.bigint();
     logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds.`);

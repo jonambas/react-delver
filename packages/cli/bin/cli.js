@@ -14,7 +14,6 @@ const cli = meow(
     $ ${chalk.blueBright('delve')} [options...]
 
   ${chalk.bold('OPTIONS')}
-    --config, -c   Path to config, default './.delverc'
     --help, -h     Displays this usage guide
     --version, -v  Displays version info
 `,
@@ -28,33 +27,30 @@ const cli = meow(
       version: {
         type: 'boolean',
         alias: 'v'
-      },
-      output: {
-        type: 'string',
-        alias: 'o',
-        default: './delve'
       }
     }
   }
 );
 
 async function delve(flags) {
-  if (flags.version) {
+  const { version, help } = flags;
+
+  if (version) {
     cli.showVersion(1);
   }
 
-  if (flags.help) {
+  if (help) {
     cli.showHelp();
     process.exit(1);
   }
 
-  const configPath = await findUp('.delverc');
+  const configPath = await findUp('delver.config.json');
   let config = {};
 
   if (!configPath) {
-    logMuted('.delverc not found. Using default settings.');
+    logMuted('Using default settings.');
   } else {
-    config = fs.readFileSync(configPath);
+    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
   }
 
   lib(config);
