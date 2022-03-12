@@ -1,0 +1,25 @@
+{
+  "name": "react-delve",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonambas/react-delve.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "Jon Ambas <jon@jonambas.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jonambas/react-delve/issues"
+  },
+  "homepage": "https://github.com/jonambas/react-delve#readme",
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}

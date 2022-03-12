@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Foo",
+    "spread": true,
+    "props": [
+      { "value": "bar", "name": "foo" },
+      { "value": true, "name": "implicit" },
+      { "value": false, "name": "false" },
+      { "value": "() => ({})", "name": "func" }
+    ],
+    "location": { "file": "src/a.js", "line": 7, "character": 6 }
+  },
+  {
+    "name": "Foo",
+    "spread": false,
+    "props": [{ "value": "bar", "name": "foo" }],
+    "location": { "file": "src/index.js", "line": 7, "character": 6 }
+  },
+  {
+    "name": "Foo",
+    "spread": false,
+    "props": [],
+    "location": { "file": "src/index.js", "line": 8, "character": 8 }
+  }
+]

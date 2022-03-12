@@ -1,0 +1,20 @@
+{
+  "name": "delve-example",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm link ../packages/core",
+    "start": "delve",
+    "poststart": "prettier --write \"delve.json\""
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  }
+}
