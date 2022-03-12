@@ -12,8 +12,8 @@
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
   "dependencies": {
-    "@delver/logger": "0.0.1",
-    "@delver/react": "0.0.1",
+    "@delver/logger": "^0.0.1",
+    "@delver/react": "^0.0.1",
     "find-up": "^6.3.0",
     "meow": "^10.1.2",
     "prettier": "^2.5.1"
