@@ -1,5 +1,4 @@
 #! /usr/bin/env node
-import fs from 'fs';
 import meow from 'meow';
 import chalk from 'chalk';
 import { findUp } from 'find-up';
@@ -44,13 +43,14 @@ async function delve(flags) {
     process.exit(1);
   }
 
-  const configPath = await findUp('delver.config.json');
+  const configPath = await findUp('delver.config.js');
   let config = {};
 
   if (!configPath) {
     logMuted('Using default settings.');
   } else {
-    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const configImport = await import(configPath);
+    config = configImport.default;
   }
 
   lib(config);

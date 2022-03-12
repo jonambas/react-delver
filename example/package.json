@@ -2,10 +2,10 @@
   "name": "react-delver-example",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "delve",
-    "poststart": "prettier --write \"delve.json\""
+    "start": "npm link ../packages/cli && delve",
+    "poststart": "prettier --write \"dist/build.json\""
   },
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",

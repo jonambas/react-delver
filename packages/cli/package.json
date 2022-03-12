@@ -1,5 +1,5 @@
 {
-  "name": "@delver/cli",
+  "name": "delver",
   "version": "0.0.2",
   "description": "",
   "type": "module",

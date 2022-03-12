@@ -1,7 +1,6 @@
 import ts from 'typescript';
 import fs from 'fs';
 import { logMuted, logError } from '@delver/logger';
-import processResults from './process';
 
 type Raw = {
   raw: true;
@@ -113,6 +112,28 @@ function shouldReport({
   return true;
 }
 
+function processResults(results: RawResult[]): ProcessedResult[] {
+  const processed = results.reduce((acc = [], item) => {
+    const index = acc.findIndex((n) => n.name === item.name);
+
+    if (index !== -1) {
+      acc[index].count = acc[index].count + 1;
+      acc[index].instances.push(item);
+      return acc;
+    }
+
+    acc.push({
+      name: item.name,
+      count: 1,
+      instances: [item]
+    });
+
+    return acc;
+  }, [] as ProcessedResult[]);
+
+  return processed;
+}
+
 // Storage
 const data: RawResult[] = [];
 
@@ -203,10 +224,7 @@ type ConfigArgument = (Config & Raw) | (Config & NotRaw);
  * @param files - Array of strings of paths to files
  * @param config - Config options
  */
-export default function parseFiles<T extends ConfigArgument>(
-  files: string[],
-  config: T
-): ReturnType<T> {
+function parseFiles<T extends ConfigArgument>(files: string[], config: T): ReturnType<T> {
   logMuted(`Parsing ${files.length} files.`);
   data.splice(0, data.length);
 
@@ -232,3 +250,5 @@ export default function parseFiles<T extends ConfigArgument>(
     process.exit(1);
   }
 }
+
+export default parseFiles;
