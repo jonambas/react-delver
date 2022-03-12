@@ -21,7 +21,7 @@ export type Props = {
   name: string;
 }[];
 
-export type Result = {
+export type RawResult = {
   name: string;
   spread?: boolean;
   props?: Props;
@@ -34,7 +34,7 @@ export type Result = {
 export type ProcessedResult = {
   name: string;
   count: number;
-  instances: Result[];
+  instances: RawResult[];
 };
 
 type JSXNode = ts.Node & {
@@ -114,7 +114,7 @@ function shouldReport({
 }
 
 // Storage
-const data: Result[] = [];
+const data: RawResult[] = [];
 
 function parse(source: ts.SourceFile, config: Config, file: string) {
   const { from } = config;
@@ -195,9 +195,14 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
   }
 }
 
-type ReturnType<T> = T extends Raw ? Result[] : ProcessedResult[];
+type ReturnType<T> = T extends Raw ? RawResult[] : ProcessedResult[];
 type ConfigArgument = (Config & Raw) | (Config & NotRaw);
 
+/**
+ * Analyzes files for React component usage
+ * @param files - Array of strings of paths to files
+ * @param config - Config options
+ */
 export default function parseFiles<T extends ConfigArgument>(
   files: string[],
   config: T

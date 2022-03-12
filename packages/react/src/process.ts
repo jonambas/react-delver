@@ -1,6 +1,6 @@
-import type { Result, ProcessedResult } from './index';
+import type { RawResult, ProcessedResult } from './index';
 
-export default function processResults(results: Result[]): ProcessedResult[] {
+export default function processResults(results: RawResult[]): ProcessedResult[] {
   const processed = results.reduce((acc = [], item) => {
     const index = acc.findIndex((n) => n.name === item.name);
 
