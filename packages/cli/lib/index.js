@@ -1,4 +1,4 @@
-import path from 'path';
+#! /usr/bin/env node
 import start from './start.js';
 
 function makeDefaultConfig(config) {
@@ -8,6 +8,9 @@ function makeDefaultConfig(config) {
     ignore: ['node_modules'],
     from: ['package/a'],
     // ignoreSubComponents: false,
+    // level: 'counts',
+    // level: 'raw',
+    // level: 'raw',
     ...config
   };
 }

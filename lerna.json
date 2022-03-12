@@ -1,6 +1,4 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/cli", "packages/logger", "packages/react"],
   "version": "0.0.0"
 }

@@ -1,13 +1,10 @@
 #! /usr/bin/env node
 import fs from 'fs';
-import { createRequire } from 'module';
 import meow from 'meow';
 import chalk from 'chalk';
 import { findUp } from 'find-up';
-import { logMuted } from '../lib/log.js';
+import { logMuted } from '@delver/logger';
 import lib from '../lib/index.js';
-
-const require = createRequire(import.meta.url);
 
 const cli = meow(
   `
