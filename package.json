@@ -24,8 +24,6 @@
   },
   "homepage": "https://github.com/jonambas/react-delver#readme",
   "devDependencies": {
-    "@delver/logger": "^0.0.1",
-    "@delver/react": "^0.0.1",
     "@swc/jest": "^0.2.20",
     "@types/jest": "^27.4.1",
     "chalk": "^5.0.1",
