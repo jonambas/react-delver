@@ -1,6 +1,6 @@
 {
   "name": "@delver/react",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "type": "module",
   "main": "dist/index.esm.js",
@@ -20,7 +20,7 @@
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
   "dependencies": {
-    "@delver/logger": "^0.0.4",
+    "@delver/logger": "^0.0.5",
     "glob": "^7.2.0",
     "typescript": "^4.6.2"
   },
