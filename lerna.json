@@ -5,5 +5,13 @@
     "packages/react",
     "packages/css"
   ],
-  "version": "0.0.5"
+  "version": "0.0.5",
+  "command": {
+    "bootstrap": {
+      "npmClientArgs": ["--no-package-lock"]
+    },
+    "version": {
+      "message": "Publish %s"
+    }
+  }
 }
