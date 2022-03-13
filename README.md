@@ -50,7 +50,7 @@ import { parseFiles } from '@delver/react';
 const results = parseFiles(files, options);
 ```
 
-### #`files`
+### `files`
 
 Type: `string[]`
 
