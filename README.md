@@ -4,7 +4,7 @@ Delver is a React component analysis tool. Delver provides a CLI, Node API, and 
 
 ---
 
-### CLI Usage
+## CLI Usage
 
 Run delver via the command line:
 
@@ -36,7 +36,7 @@ export default {
 };
 ```
 
-### Node Usage
+## Node Usage
 
 Delver offers a Node API
 
