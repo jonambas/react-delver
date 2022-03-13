@@ -1,8 +1,8 @@
 # react-delver
 
-`react-delver` is a React component analysis tool. Delver provides a CLI, Node API, and a standalone environment that can be used or deployed with your component or design system documentation.
+`react-delver` is a design system analysis tool. Delver provides a CLI, Node API, and a standalone environment that can be used or deployed with your component or design system documentation.
 
-`react-delver` will turn:
+`react-delver` can parse JSX, and will turn:
 
 ```js
 function App() {
@@ -26,7 +26,11 @@ into this:
         "name": "Bar",
         "spread": false,
         "props": [{ "value": true, "name": "foo" }],
-        "location": { "file": "src/file.js", "line": 8, "character": 6 }
+        "location": {
+          "file": "src/file.js",
+          "line": 8,
+          "character": 6
+        }
       }
     ]
   },
@@ -38,7 +42,11 @@ into this:
         "name": "Foo",
         "spread": false,
         "props": [{ "value": "baz", "name": "bar" }],
-        "location": { "file": "src/file.js", "line": 7, "character": 6 }
+        "location": {
+          "file": "src/file.js",
+          "line": 7,
+          "character": 6
+        }
       }
     ]
   }
@@ -49,37 +57,60 @@ into this:
 
 ## CLI Usage
 
-Run delver via the command line:
+Install via the command line:
 
 ```bash
-npx @delver/cli
+npm i @delver/cli --save-dev
 ```
 
-To configure options, create a `delver.config.js` file to the root directory of your project:
+Then, configure options by creating a `delver.config.js` file to the root directory of your project:
 
 ```js
 export default {
-  // Output path of the results.
-  output: 'dist/delve.json',
+  react: {
+    // Output path of the results.
+    output: 'dist/react.json',
 
-  // Glob pattern of which files to target
-  include: 'src/**/!(*.test|*.spec).@(js|ts)?(x)'
+    // Glob pattern of which files to target
+    include: 'src/**/!(*.test|*.spec).@(js|ts)?(x)'
 
-  // Whether to report subcomponents or not
-  // When true, `<Foo.Bar />` will be ignored, but `<Foo />` will be included
-  ignoreSubComponents: false,
+    // Whether to report subcomponents or not
+    // When true, `<Foo.Bar />` will be ignored, but `<Foo />` will be included
+    ignoreSubComponents: false,
 
-  // Whether or not to proceess the results
-  // When false, data will be grouped by component names and include counts
-  raw: false,
+    // If included, only report components imported from this list of packages
+    // Omitting this will bypass this check
+    from: ['package/a']
+  },
+  css: {
+    // Output path of the results.
+    output: 'dist/css.json',
 
-  // If included, only report components imported from this list of packages
-  // Omitting this will bypass this check
-  from: ['package/a']
+    // Glob pattern of which files to target
+    include: 'src/**/*.?(s)css',
+
+    // Array of CSS properties to include
+    properties: ['color', 'background', 'background-color', 'fill', 'stroke']
+
+    // Pass in a custom design token evaluator
+    // By default, all CSS and SCSS variables will be treated as tokens
+    // Returning `true` will mark this line as a token in results
+    evaluateToken: (line: string, file: string) => boolean
+  }
 };
 ```
 
-## Node Usage
+And finally, run `react-delve`:
+
+```bash
+# Runs the React parser
+delve react
+
+# Runs the CSS parser
+delve css
+```
+
+## Node `@delver/react` Usage
 
 Delver offers a Node API
 
@@ -88,9 +119,9 @@ npm i @delver/react --save-dev
 ```
 
 ```js
-import { parseFiles } from '@delver/react';
+import { parseReact } from '@delver/react';
 
-const results = parseFiles(files, options);
+const results = parseReact(files, options);
 ```
 
 ### `files`

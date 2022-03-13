@@ -2,7 +2,8 @@
   "packages": [
     "packages/cli",
     "packages/logger",
-    "packages/react"
+    "packages/react",
+    "packages/css"
   ],
   "version": "0.0.5"
 }

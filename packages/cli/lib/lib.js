@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import glob from 'glob-promise';
 import { parseReact } from '@delver/react';
+import { parseCss } from '@delver/css';
 import { logMuted, logSuccess, logError } from '@delver/logger';
 
 function makeDefaultConfig(config = {}) {
@@ -45,13 +46,37 @@ async function react(config) {
   }
 }
 
+async function css(config) {
+  const { include, ignore, output, ...rest } = config.css;
+  logMuted(`Running css`);
+
+  try {
+    // Get files using the provided glob pattern
+    const files = await glob(include, { ignore });
+    logMuted(`Parsing ${files.length} files`);
+
+    // Parse and process using @delver/css
+    const result = parseCss(files, rest);
+
+    // Write the results to disk
+    const outputPath = path.resolve(process.cwd(), output);
+    logMuted(`Writing ${output}`);
+    await fs.outputFile(outputPath, JSON.stringify(result));
+  } catch (error) {
+    logError(error);
+    process.exit(1);
+  }
+}
+
 export function lib(userConfig) {
   const startTime = process.hrtime.bigint();
   const config = makeDefaultConfig(userConfig);
 
   const finish = () => {
     const endTime = process.hrtime.bigint();
-    logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds`);
+    logSuccess(
+      `Finished in ${Number(endTime - startTime) / 1e9} seconds`
+    );
   };
 
   return {
@@ -59,7 +84,8 @@ export function lib(userConfig) {
       await react(config);
       finish();
     },
-    css: () => {
+    css: async () => {
+      await css(config);
       finish();
     }
   };

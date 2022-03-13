@@ -4,9 +4,9 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start:react": "npm link ../packages/cli && delve react",
-    "start:css": "npm link ../packages/cli && delve css",
-    "poststart": "prettier --write \"dist/build.json\""
+    "start:react": "npm link ../packages/cli && delve react && npm run format",
+    "start:css": "npm link ../packages/cli && delve css && npm run format",
+    "format": "prettier --write \"dist/*.json\""
   },
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",

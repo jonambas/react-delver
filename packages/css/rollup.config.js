@@ -15,7 +15,7 @@ export default {
       }
     })
   ],
-  external: ['typescript', 'fs'],
+  external: ['fs'],
   output: [
     {
       format: 'esm',

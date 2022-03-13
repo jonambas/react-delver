@@ -21,6 +21,7 @@
   "dependencies": {
     "@delver/logger": "^0.0.5",
     "@delver/react": "^0.0.5",
+    "@delver/css": "^0.0.5",
     "find-up": "^6.3.0",
     "fs-extra": "^10.0.1",
     "glob-promise": "^4.2.2",
