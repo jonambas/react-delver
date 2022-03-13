@@ -1,6 +1,49 @@
 # react-delver
 
-Delver is a React component analysis tool. Delver provides a CLI, Node API, and a standalone environment that can be used or deployed with your component or design system documentation.
+`react-delver` is a React component analysis tool. Delver provides a CLI, Node API, and a standalone environment that can be used or deployed with your component or design system documentation.
+
+`react-delver` will turn:
+
+```js
+function App() {
+  return (
+    <Foo bar="baz">
+      <Bar foo />
+    </Foo>
+  );
+}
+```
+
+into this:
+
+```json
+[
+  {
+    "name": "Bar",
+    "count": 1,
+    "instances": [
+      {
+        "name": "Bar",
+        "spread": false,
+        "props": [{ "value": true, "name": "foo" }],
+        "location": { "file": "src/file.js", "line": 8, "character": 6 }
+      }
+    ]
+  },
+  {
+    "name": "Foo",
+    "count": 1,
+    "instances": [
+      {
+        "name": "Foo",
+        "spread": false,
+        "props": [{ "value": "baz", "name": "bar" }],
+        "location": { "file": "src/file.js", "line": 7, "character": 6 }
+      }
+    ]
+  }
+]
+```
 
 ---
 
