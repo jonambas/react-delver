@@ -1,6 +1,5 @@
 import ts from 'typescript';
 import fs from 'fs';
-import { logMuted, logError } from '@delver/logger';
 
 type Raw = {
   raw: true;
@@ -224,29 +223,21 @@ type ConfigArgument = (Config & Raw) | (Config & NotRaw);
  * @param files - Array of strings of paths to files
  * @param config - Config options
  */
-export function parseFiles<T extends ConfigArgument>(files: string[], config: T): ReturnType<T> {
-  logMuted(`Parsing ${files.length} files.`);
+export function parseReact<T extends ConfigArgument>(files: string[], config: T): ReturnType<T> {
   data.splice(0, data.length);
 
-  try {
-    files.forEach((file) => {
-      const source = ts.createSourceFile(
-        file,
-        fs.readFileSync(file).toString(),
-        ts.ScriptTarget.ES2015
-      );
-      parse(source, config, file);
-    });
+  files.forEach((file) => {
+    const source = ts.createSourceFile(
+      file,
+      fs.readFileSync(file).toString(),
+      ts.ScriptTarget.ES2015
+    );
+    parse(source, config, file);
+  });
 
-    logMuted(`Found ${data.length} components.`);
-
-    if (config.raw) {
-      return data as ReturnType<T>;
-    }
-
-    return processResults(data) as ReturnType<T>;
-  } catch (error) {
-    logError(`${error}`);
-    process.exit(1);
+  if (config.raw) {
+    return data as ReturnType<T>;
   }
+
+  return processResults(data) as ReturnType<T>;
 }

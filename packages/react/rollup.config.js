@@ -15,7 +15,7 @@ export default {
       }
     })
   ],
-  external: ['typescript', 'glob', '@delver/logger', 'fs'],
+  external: ['typescript', 'fs'],
   output: [
     {
       format: 'esm',
