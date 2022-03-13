@@ -45,5 +45,6 @@
   "engines": {
     "node": "^14.16.1",
     "npm": "^8.5.4"
-  }
+  },
+  "packageManager": "npm@8.5.4"
 }
