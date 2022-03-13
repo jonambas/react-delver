@@ -1,9 +1,11 @@
-import { parseFiles } from '../index';
+import { parseReact } from '../';
 
 describe('parse', () => {
   describe('inclusion', () => {
     it('includes sub components', () => {
-      const result = parseFiles(['./tests/inclusion.jsx'], { ignoreSubComponents: false });
+      const result = parseReact(['./tests/inclusion.jsx'], {
+        ignoreSubComponents: false
+      });
       expect(result[0].name).toBe('Foo');
       expect(result[0].count).toBe(2);
       expect(result[1].name).toBe('Foo.Bar');
@@ -11,14 +13,18 @@ describe('parse', () => {
     });
 
     it('ignores sub components', () => {
-      const result = parseFiles(['./tests/inclusion.jsx'], { ignoreSubComponents: true });
+      const result = parseReact(['./tests/inclusion.jsx'], {
+        ignoreSubComponents: true
+      });
       expect(result[0].name).toBe('Foo');
       expect(result[0].count).toBe(2);
       expect(result.length).toBe(2);
     });
 
     it('includes only specified packages', () => {
-      const result = parseFiles(['./tests/inclusion.jsx'], { from: ['package/b'] });
+      const result = parseReact(['./tests/inclusion.jsx'], {
+        from: ['package/b']
+      });
       expect(result[0].name).toBe('Baz');
       expect(result[0].count).toBe(1);
     });
@@ -26,7 +32,7 @@ describe('parse', () => {
 
   describe('prop parser', () => {
     it('finds strings', () => {
-      const result = parseFiles(['./tests/props.jsx'], {});
+      const result = parseReact(['./tests/props.jsx'], {});
       const props = result[0].instances[0].props || [];
 
       expect(props[0].name).toBe('string');
@@ -34,7 +40,7 @@ describe('parse', () => {
     });
 
     it('finds booleans', () => {
-      const result = parseFiles(['./tests/props.jsx'], {});
+      const result = parseReact(['./tests/props.jsx'], {});
       const props = result[0].instances[0].props || [];
 
       expect(props[1].name).toBe('implicitTrue');
@@ -45,7 +51,7 @@ describe('parse', () => {
     });
 
     it('finds expressions', () => {
-      const result = parseFiles(['./tests/props.jsx'], {});
+      const result = parseReact(['./tests/props.jsx'], {});
       const props = result[0].instances[0].props || [];
 
       expect(props[3].name).toBe('expression');
@@ -58,7 +64,9 @@ describe('parse', () => {
 
   describe('raw processing', () => {
     it('bypasses processing', () => {
-      const result = parseFiles(['./tests/inclusion.jsx'], { raw: true });
+      const result = parseReact(['./tests/inclusion.jsx'], {
+        raw: true
+      });
       expect(result.length).toBe(4);
       expect(result[0].name).toBe('Foo');
       expect(result[0].count).toBe(undefined);
