@@ -4,6 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   moduleNameMapper: {
     '@delver/logger(.*)': '<rootDir>/packages/logger/src',
+    '@delver/react(.*)': '<rootDir>/packages/react/src',
     chalk: 'chalk/source/index.js',
     '#ansi-styles': 'chalk/source/vendor/ansi-styles/index.js',
     '#supports-color': 'chalk/source/vendor/supports-color/index.js'
