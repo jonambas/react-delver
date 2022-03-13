@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm i && lerna exec -- npm i && lerna bootstrap
+        run: npm ci && lerna exec -- npm ci
+      - name: Bootstrap
+        run: lerna bootstrap
       - name: Unit tests
         run: npm run test
