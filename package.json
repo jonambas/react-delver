@@ -8,6 +8,8 @@
     "packages/react"
   ],
   "scripts": {
+    "prebuild": "lerna bootstrap",
+    "build": "lerna run build",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch"
   },
   "repository": {
