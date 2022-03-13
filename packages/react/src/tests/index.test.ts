@@ -77,9 +77,11 @@ describe('parse', () => {
   });
 
   describe('imports', () => {
-    const result = parseReact([inclusionFile]);
-    expect(result[0].instances[0].from).toBe('package/a');
-    expect(result[1].instances[0].from).toBe('package/a');
-    expect(result[2].instances[0].from).toBe('package/b');
+    it('collects import package correctly', () => {
+      const result = parseReact([inclusionFile]);
+      expect(result[0].instances[0].from).toBe('package/a');
+      expect(result[1].instances[0].from).toBe('package/a');
+      expect(result[2].instances[0].from).toBe('package/b');
+    });
   });
 });
