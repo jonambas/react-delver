@@ -14,7 +14,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c",
-    "postbuild": "tsc"
+    "postbuild": "tsc",
+    "prepublish": "npm run build"
   },
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
