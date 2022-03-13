@@ -1,0 +1,31 @@
+{
+  "name": "@delver/css",
+  "version": "0.0.5",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "rollup -c",
+    "postbuild": "tsc",
+    "prepublish": "npm run build"
+  },
+  "author": "Jon Ambas <jon@jonambas.com>",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.70.0",
+    "rollup-plugin-swc": "^0.2.1"
+  }
+}

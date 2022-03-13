@@ -136,7 +136,7 @@ function processResults(results: RawResult[]): ProcessedResult[] {
 // Storage
 const data: RawResult[] = [];
 
-function parse(source: ts.SourceFile, config: Config, file: string) {
+function parse(source: ts.SourceFile, config: Config = {}, file: string) {
   const { from } = config;
   const imports: Imports = [];
 
@@ -223,7 +223,7 @@ type ConfigArgument = (Config & Raw) | (Config & NotRaw);
  * @param files - Array of strings of paths to files
  * @param config - Config options
  */
-export function parseReact<T extends ConfigArgument>(files: string[], config: T): ReturnType<T> {
+export function parseReact<T extends ConfigArgument>(files: string[], config?: T): ReturnType<T> {
   data.splice(0, data.length);
 
   files.forEach((file) => {
@@ -235,7 +235,7 @@ export function parseReact<T extends ConfigArgument>(files: string[], config: T)
     parse(source, config, file);
   });
 
-  if (config.raw) {
+  if (config?.raw) {
     return data as ReturnType<T>;
   }
 

@@ -2,7 +2,7 @@
 import meow from 'meow';
 import chalk from 'chalk';
 import { findUp } from 'find-up';
-import { logMuted } from '@delver/logger';
+import { logMuted, logInfo } from '@delver/logger';
 import { lib } from '../lib/lib.js';
 
 const cli = meow(
@@ -10,11 +10,15 @@ const cli = meow(
   ${chalk.blueBright('delve')} - React component analytics
 
   ${chalk.bold('USAGE')}
-    $ ${chalk.blueBright('delve')} [options...]
+    $ ${chalk.blueBright('delve')} [command] [options...]
 
   ${chalk.bold('OPTIONS')}
     --help, -h     Displays this usage guide
     --version, -v  Displays version info
+
+  ${chalk.bold('COMMANDS')}
+    react          Runs the React parser
+    css            Runs the CSS parser
 `,
   {
     importMeta: import.meta,
@@ -31,7 +35,7 @@ const cli = meow(
   }
 );
 
-async function delve(flags) {
+async function delve(command, flags) {
   const { version, help } = flags;
 
   if (version) {
@@ -54,7 +58,16 @@ async function delve(flags) {
     config = configImport.default;
   }
 
-  lib(config);
+  const delve = lib(config);
+
+  if (delve.hasOwnProperty(command)) {
+    await delve[command]();
+    process.exit(0);
+  } else {
+    logInfo(`Command '${command}' not found.`);
+    cli.showHelp();
+    process.exit(1);
+  }
 }
 
-delve(cli.flags);
+delve(cli.input[0], cli.flags);

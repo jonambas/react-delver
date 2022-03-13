@@ -33,6 +33,7 @@
     "@swc/jest": "^0.2.20",
     "@types/jest": "^27.4.1",
     "chalk": "^5.0.1",
+    "glob-promise": "^4.2.2",
     "jest": "^27.5.1",
     "lerna": "^4.0.0",
     "rimraf": "^3.0.2",
