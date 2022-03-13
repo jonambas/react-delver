@@ -5,7 +5,8 @@
   "workspaces": [
     "packages/logger",
     "packages/cli",
-    "packages/react"
+    "packages/react",
+    "packages/css"
   ],
   "scripts": {
     "prebuild": "lerna bootstrap",
