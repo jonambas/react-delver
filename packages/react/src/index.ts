@@ -24,6 +24,7 @@ export type RawResult = {
   spread?: boolean;
   props?: Props;
   count?: number;
+  from?: string;
   location?: ts.LineAndCharacter & {
     file?: string;
   };
@@ -42,10 +43,26 @@ type JSXNode = ts.Node & {
   };
 };
 
-type Imports = string[];
+type ImportNode = ts.Node & {
+  moduleSpecifier?: ts.StringLiteral;
+};
+
+type Imports = {
+  line: string;
+  package?: string;
+}[];
 
 function getLoc(node: ts.Node, source: ts.SourceFile) {
-  return ts.getLineAndCharacterOfPosition(source, node.getStart(source));
+  return ts.getLineAndCharacterOfPosition(
+    source,
+    node.getStart(source)
+  );
+}
+
+function getFrom(name: string, imports: Imports) {
+  const [main, ...r] = name.split('.');
+  const importObj = imports.find(({ line }) => line.includes(main));
+  return importObj?.package;
 }
 
 function isNodeComponent(node: ts.Node) {
@@ -84,14 +101,16 @@ function shouldReport({
   node: JSXNode;
   source: ts.SourceFile;
   config: Config;
-  imports: string[];
+  imports: Imports;
 }) {
   // This node isn't a component
   if (!isNodeComponent(node)) {
     return false;
   }
 
-  const [name, ...nameParts] = getComponentName(node, source).split('.');
+  const [name, ...nameParts] = getComponentName(node, source).split(
+    '.'
+  );
 
   // Ignore fragments
   if (isFragment(name)) {
@@ -104,7 +123,10 @@ function shouldReport({
   }
 
   // Check if this component is in stored imports
-  if (config.from && !imports.some((i) => i.includes(name))) {
+  if (
+    config.from &&
+    !imports.some(({ line }) => line.includes(name))
+  ) {
     return false;
   }
 
@@ -136,7 +158,11 @@ function processResults(results: RawResult[]): ProcessedResult[] {
 // Storage
 const data: RawResult[] = [];
 
-function parse(source: ts.SourceFile, config: Config = {}, file: string) {
+function parse(
+  source: ts.SourceFile,
+  config: Config = {},
+  file: string
+) {
   const { from } = config;
   const imports: Imports = [];
 
@@ -145,11 +171,15 @@ function parse(source: ts.SourceFile, config: Config = {}, file: string) {
   function visit(node: JSXNode) {
     // Store node so we can reference later
     if (isNodeImport(node)) {
-      const text = getImportText(node, source);
+      const importNode: ImportNode = node;
+      const text = getImportText(importNode, source);
 
       // Only include this import node if it is not ignored
       if (!from || from.some((f) => text.includes(f))) {
-        imports.push(text);
+        imports.push({
+          line: text,
+          package: importNode.moduleSpecifier?.text
+        });
       }
     }
 
@@ -180,7 +210,10 @@ function parse(source: ts.SourceFile, config: Config = {}, file: string) {
 
           if (ts.isJsxExpression(initializer)) {
             // Numbers
-            if (initializer.expression && ts.isNumericLiteral(initializer.expression)) {
+            if (
+              initializer.expression &&
+              ts.isNumericLiteral(initializer.expression)
+            ) {
               value = initializer.expression.text;
             } else {
               // Everything else, variables, functions, etc
@@ -191,7 +224,10 @@ function parse(source: ts.SourceFile, config: Config = {}, file: string) {
 
               // Keep only first 200 characters
               const max = 200;
-              value = expression.length > max ? `${expression.substring(0, max)}...` : expression;
+              value =
+                expression.length > max
+                  ? `${expression.substring(0, max)}...`
+                  : expression;
 
               // For some reason I cant check for ts.FalseKeyword
               if (value === 'false') {
@@ -207,6 +243,7 @@ function parse(source: ts.SourceFile, config: Config = {}, file: string) {
         name,
         spread,
         props: toSave,
+        from: getFrom(name, imports),
         location: { file, ...getLoc(node, source) }
       });
     }
@@ -216,14 +253,17 @@ function parse(source: ts.SourceFile, config: Config = {}, file: string) {
 }
 
 type ReturnType<T> = T extends Raw ? RawResult[] : ProcessedResult[];
-type ConfigArgument = (Config & Raw) | (Config & NotRaw);
+type ConfigArgument = (Config & NotRaw) | (Config & Raw);
 
 /**
  * Analyzes files for React component usage
  * @param files - Array of strings of paths to files
  * @param config - Config options
  */
-export function parseReact<T extends ConfigArgument>(files: string[], config?: T): ReturnType<T> {
+export function parseReact<T extends ConfigArgument = {}>(
+  files: string[],
+  config?: T
+): ReturnType<T> {
   data.splice(0, data.length);
 
   files.forEach((file) => {

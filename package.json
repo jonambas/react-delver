@@ -6,7 +6,8 @@
     "packages/logger",
     "packages/cli",
     "packages/react",
-    "packages/css"
+    "packages/css",
+    "packages/example"
   ],
   "scripts": {
     "build": "turbo run build",

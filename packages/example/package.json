@@ -4,14 +4,15 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start:react": "npm link ../packages/cli && delve react && npm run format",
-    "start:css": "npm link ../packages/cli && delve css && npm run format",
+    "start:react": "delve react && npm run format",
+    "start:css": "delve css && npm run format",
     "format": "prettier --write \"dist/*.json\""
   },
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
   "dependencies": {
-    "@delver/cli": "../packages/cli"
+    "@delver/cli": "../cli",
+    "@delver/react": "../react"
   },
   "devDependencies": {
     "prettier": "^2.5.1"
