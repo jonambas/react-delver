@@ -3,7 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   moduleNameMapper: {
-    '@delver/logger': '<rootDir>/packages/logger/src',
+    '@delver/logger': '<rootDir>/packages/logger/src/index.ts',
     chalk: 'chalk/source/index.js',
     '#ansi-styles': 'chalk/source/vendor/ansi-styles/index.js',
     '#supports-color': 'chalk/source/vendor/supports-color/index.js'
