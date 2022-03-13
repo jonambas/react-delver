@@ -13,9 +13,7 @@
     "bin",
     "lib"
   ],
-  "scripts": {
-    "build": ""
-  },
+  "scripts": {},
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
   "dependencies": {
