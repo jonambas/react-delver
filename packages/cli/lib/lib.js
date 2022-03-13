@@ -1,9 +1,20 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 import fs from 'fs-extra';
+/* @ts-ignore */
 import path from 'path';
 import glob from 'glob';
-import parse from '@delver/react';
+import { parseFiles } from '@delver/react';
 import { logMuted, logSuccess } from '@delver/logger';
+
+function makeDefaultConfig(config) {
+  return {
+    output: 'dist/delve.json',
+    include: 'src/**/!(*.test|*.spec).@(js|ts)?(x)',
+    ignoreSubComponents: false,
+    raw: false,
+    ...config
+  };
+}
 
 function start(config) {
   const startTime = process.hrtime.bigint();
@@ -15,7 +26,7 @@ function start(config) {
       process.exit(1);
     }
 
-    const result = parse(files, rest);
+    const result = parseFiles(files, rest);
     const outputPath = path.resolve(process.cwd(), config.output);
 
     fs.outputFileSync(outputPath, JSON.stringify(result));
@@ -26,4 +37,7 @@ function start(config) {
   });
 }
 
-export default start;
+export function lib(userConfig) {
+  const config = makeDefaultConfig(userConfig);
+  start(config);
+}

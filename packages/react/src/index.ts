@@ -224,7 +224,7 @@ type ConfigArgument = (Config & Raw) | (Config & NotRaw);
  * @param files - Array of strings of paths to files
  * @param config - Config options
  */
-function parseFiles<T extends ConfigArgument>(files: string[], config: T): ReturnType<T> {
+export function parseFiles<T extends ConfigArgument>(files: string[], config: T): ReturnType<T> {
   logMuted(`Parsing ${files.length} files.`);
   data.splice(0, data.length);
 
@@ -250,5 +250,3 @@ function parseFiles<T extends ConfigArgument>(files: string[], config: T): Retur
     process.exit(1);
   }
 }
-
-export default parseFiles;

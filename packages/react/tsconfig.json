@@ -9,6 +9,7 @@
     "outDir": "./dist",
     "moduleResolution": "node",
     "strict": true,
+    "emitDeclarationOnly": true,
     "declaration": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true

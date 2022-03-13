@@ -1,9 +1,9 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 import meow from 'meow';
 import chalk from 'chalk';
 import { findUp } from 'find-up';
 import { logMuted } from '@delver/logger';
-import lib from '../lib/index.js';
+import { lib } from '../lib/lib.js';
 
 const cli = meow(
   `
@@ -35,7 +35,8 @@ async function delve(flags) {
   const { version, help } = flags;
 
   if (version) {
-    cli.showVersion(1);
+    cli.showVersion();
+    process.exit(0);
   }
 
   if (help) {
