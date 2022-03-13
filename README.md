@@ -6,11 +6,13 @@ Delver is a React component analysis tool. Delver provides a CLI, Node API, and 
 
 ### CLI Usage
 
+Run delver via the command line:
+
 ```bash
 npx delver
 ```
 
-Create a `delver.config.js` file to the root directory of your project:
+To configure options, create a `delver.config.js` file to the root directory of your project:
 
 ```js
 export default {
@@ -21,7 +23,7 @@ export default {
   include: 'src/**/!(*.test|*.spec).@(js|ts)?(x)'
 
   // Whether to report subcomponents or not
-  // When true, `<Foo.Bar />` will be ignored, but `<Foo /> will be included
+  // When true, `<Foo.Bar />` will be ignored, but `<Foo />` will be included
   ignoreSubComponents: false,
 
   // Whether or not to proceess the results
@@ -33,6 +35,50 @@ export default {
   from: ['package/a']
 };
 ```
+
+### Node Usage
+
+Delver offers a Node API
+
+```bash
+npm i @delver/react --save-dev
+```
+
+```js
+import { parseFiles } from '@delver/react';
+
+const results = parseFiles(files, options);
+```
+
+##### `files`
+
+Type: `string[]`
+
+Array of file paths to parse.
+
+#### Options
+
+##### `options.ignoreSubComponents`
+
+Type: `boolean`
+
+Default: `false`
+
+Whether to include subcomponents or not. For example, when set to `true`, `<Foo.Bar />` will be ignored, but `<Foo />` will be included.
+
+##### `options.raw`
+
+Type: `boolean`
+
+Default: `false`
+
+Whether to aggregate the results or not. When set to `true`, data will be grouped by component display name and include component `count`.
+
+##### `options.from`
+
+Type: `string[]`
+
+If included, only include components that are imported from this list of packages. Omitting this will bypass this check.
 
 ---
 
