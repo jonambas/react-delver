@@ -115,7 +115,7 @@ Type: `boolean`
 
 Default: `false`
 
-Whether to aggregate the results or not. When set to `true`, data will be grouped by component display name and include component `count`.
+Whether to aggregate the results or not. When set to `false`, data will be grouped by component display name and include component `count`. When set to `true`, data will include an array of every component instance.
 
 #### `options.from`
 
