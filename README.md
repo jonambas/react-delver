@@ -125,6 +125,14 @@ If included, only include components that are imported from this list of package
 
 ---
 
+### Limitations
+
+`react-delver` uses typescript's compiler API to parse through your JSX.
+
+- Components will only be detected when explicitly rendered with JSX, ie `<MyComponent />`.
+- Components may not accurately represent their `displayName` if they are aliased or renamed.
+- Prop values that contain expressions such as variables or functions are not evaluated, but are stringified and truncated.
+
 ### License
 
 MIT
