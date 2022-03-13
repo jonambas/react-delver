@@ -50,15 +50,15 @@ import { parseFiles } from '@delver/react';
 const results = parseFiles(files, options);
 ```
 
-##### `files`
+### #`files`
 
 Type: `string[]`
 
 Array of file paths to parse.
 
-#### Options
+### `options`
 
-##### `options.ignoreSubComponents`
+#### `options.ignoreSubComponents`
 
 Type: `boolean`
 
@@ -66,7 +66,7 @@ Default: `false`
 
 Whether to include subcomponents or not. For example, when set to `true`, `<Foo.Bar />` will be ignored, but `<Foo />` will be included.
 
-##### `options.raw`
+#### `options.raw`
 
 Type: `boolean`
 
@@ -74,7 +74,7 @@ Default: `false`
 
 Whether to aggregate the results or not. When set to `true`, data will be grouped by component display name and include component `count`.
 
-##### `options.from`
+#### `options.from`
 
 Type: `string[]`
 
