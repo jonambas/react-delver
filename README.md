@@ -9,7 +9,7 @@ Delver is a React component analysis tool. Delver provides a CLI, Node API, and 
 Run delver via the command line:
 
 ```bash
-npx delver
+npx @delver/cli
 ```
 
 To configure options, create a `delver.config.js` file to the root directory of your project:
