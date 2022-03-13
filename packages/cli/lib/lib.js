@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import fs from 'fs-extra';
-/* @ts-ignore */
 import path from 'path';
-import glob from 'glob';
-import { parseFiles } from '@delver/react';
-import { logMuted, logSuccess } from '@delver/logger';
+import glob from 'glob-promise';
+import { parseReact } from '@delver/react';
+import { logMuted, logSuccess, logError } from '@delver/logger';
 
 function makeDefaultConfig(config) {
   return {
@@ -16,28 +15,33 @@ function makeDefaultConfig(config) {
   };
 }
 
-function start(config) {
-  const startTime = process.hrtime.bigint();
+async function start(config) {
   const { include, ignore, ...rest } = config;
 
-  glob(include, { ignore }, (err, files) => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
+  try {
+    // Get files using the provided glob pattern
+    const files = await glob(include, { ignore });
+    logMuted(`Parsing ${files.length} files.`);
 
-    const result = parseFiles(files, rest);
+    // Parse and process using @delver/react
+    const result = parseReact(files, rest);
+
+    // Write the results to disk
     const outputPath = path.resolve(process.cwd(), config.output);
-
-    fs.outputFileSync(outputPath, JSON.stringify(result));
-
-    const endTime = process.hrtime.bigint();
-    logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds.`);
-    logMuted(`${outputPath}`);
-  });
+    logMuted(`Writing – ${config.output}`);
+    await fs.outputFile(outputPath, JSON.stringify(result));
+  } catch (error) {
+    logError(err);
+    process.exit(1);
+  }
 }
 
-export function lib(userConfig) {
+export async function lib(userConfig) {
+  const startTime = process.hrtime.bigint();
   const config = makeDefaultConfig(userConfig);
-  start(config);
+  await start(config);
+
+  const endTime = process.hrtime.bigint();
+  logSuccess(`Finished in ${Number(endTime - startTime) / 1e9} seconds.`);
+  process.exit(0);
 }

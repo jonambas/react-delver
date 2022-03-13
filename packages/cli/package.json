@@ -23,6 +23,7 @@
     "@delver/react": "^0.0.5",
     "find-up": "^6.3.0",
     "fs-extra": "^10.0.1",
+    "glob-promise": "^4.2.2",
     "meow": "^10.1.2"
   },
   "gitHead": "f30584752cfe6adf87d1c27b273ff51aad26aa01"
