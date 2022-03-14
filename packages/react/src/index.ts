@@ -222,15 +222,20 @@ function parse(
               // Removes the opening and closing braces
               const expression = parts.substring(1, parts.length - 1);
 
-              // Keep only first 200 characters
-              const max = 200;
+              // Removes line breaks and whitespace
+              const clean = expression
+                .replace('\n', ' ')
+                .replace(/\s+/g, ' ');
+
+              // Keep only first 100 characters
+              const max = 40;
               value =
-                expression.length > max
-                  ? `${expression.substring(0, max)}...`
-                  : expression;
+                clean.length > max
+                  ? `Expression(${clean.substring(0, max)}...)`
+                  : `Expression(${clean})`;
 
               // For some reason I cant check for ts.FalseKeyword
-              if (value === 'false') {
+              if (value === 'Expression(false)') {
                 value = false;
               }
             }
