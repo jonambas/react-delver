@@ -1,9 +1,8 @@
-#!/usr/bin/env node
 import meow from 'meow';
 import chalk from 'chalk';
 import { findUp } from 'find-up';
 import { logMuted, logInfo } from '@delver/logger';
-import { lib } from '../lib/lib.js';
+import { lib } from '../lib/lib';
 
 const cli = meow(
   `
@@ -35,7 +34,10 @@ const cli = meow(
   }
 );
 
-async function delve(command, flags) {
+async function delve(
+  command?: string,
+  flags: { version?: boolean; help?: boolean } = {}
+) {
   const { version, help } = flags;
 
   if (version) {
@@ -43,9 +45,9 @@ async function delve(command, flags) {
     process.exit(0);
   }
 
-  if (help) {
+  if (help || !command) {
     cli.showHelp();
-    process.exit(1);
+    process.exit(0);
   }
 
   const configPath = await findUp('delver.config.js');
@@ -61,7 +63,7 @@ async function delve(command, flags) {
   const delve = lib(config);
 
   if (delve.hasOwnProperty(command)) {
-    await delve[command]();
+    await delve[command as 'react' | 'css']();
     process.exit(0);
   } else {
     logInfo(`Command '${command}' not found.`);

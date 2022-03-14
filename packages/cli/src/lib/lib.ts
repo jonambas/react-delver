@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import fs from 'fs-extra';
 import path from 'path';
 import glob from 'glob-promise';
@@ -6,7 +5,41 @@ import { parseReact } from '@delver/react';
 import { parseCss } from '@delver/css';
 import { logMuted, logSuccess, logError } from '@delver/logger';
 
-function makeDefaultConfig(config = {}) {
+type UserConfig = {
+  react?: {
+    output?: string;
+    include?: string;
+    ignore?: string | string[];
+    ignoreSubComponents?: boolean;
+    raw?: boolean;
+  };
+  css?: {
+    output?: string;
+    include?: string;
+    ignore?: string | string[];
+    properties?: string[];
+    evaluateToken?: (line: string, file: string) => boolean;
+  };
+};
+
+type DefaultConfig = {
+  react: {
+    output: string;
+    include: string;
+    ignore?: string | string[];
+    ignoreSubComponents?: boolean;
+    raw: boolean;
+  };
+  css: {
+    output: string;
+    include: string;
+    ignore?: string | string[];
+    properties?: string[];
+    evaluateToken?: (line: string, file: string) => boolean;
+  };
+};
+
+function makeDefaultConfig(config: UserConfig): DefaultConfig {
   return {
     react: {
       output: 'dist/delve.json',
@@ -23,7 +56,7 @@ function makeDefaultConfig(config = {}) {
   };
 }
 
-async function react(config) {
+async function react(config: DefaultConfig) {
   const { include, ignore, output, ...rest } = config.react;
   logMuted(`Running react`);
 
@@ -41,12 +74,12 @@ async function react(config) {
     logMuted(`Writing ${output}`);
     await fs.outputFile(outputPath, JSON.stringify(result));
   } catch (error) {
-    logError(error);
+    logError(error as string);
     process.exit(1);
   }
 }
 
-async function css(config) {
+async function css(config: DefaultConfig) {
   const { include, ignore, output, ...rest } = config.css;
   logMuted(`Running css`);
 
@@ -63,12 +96,12 @@ async function css(config) {
     logMuted(`Writing ${output}`);
     await fs.outputFile(outputPath, JSON.stringify(result));
   } catch (error) {
-    logError(error);
+    logError(error as string);
     process.exit(1);
   }
 }
 
-export function lib(userConfig) {
+export function lib(userConfig: UserConfig) {
   const startTime = process.hrtime.bigint();
   const config = makeDefaultConfig(userConfig);
 

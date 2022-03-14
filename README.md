@@ -110,7 +110,7 @@ delve react
 delve css
 ```
 
-## Node `@delver/react` Usage
+## `@delver/react` Node Usage
 
 Delver offers a Node API
 
