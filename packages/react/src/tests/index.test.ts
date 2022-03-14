@@ -3,7 +3,7 @@ import { parseReact } from '../';
 const inclusionFile = './testFiles/inclusion.jsx';
 const propsFile = './testFiles/props.jsx';
 
-describe('parse', () => {
+describe('parseReact', () => {
   describe('inclusion', () => {
     it('includes sub components', () => {
       const result = parseReact([inclusionFile], {

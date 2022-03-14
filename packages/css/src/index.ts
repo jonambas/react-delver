@@ -36,7 +36,7 @@ type Config = {
    * Custom function to determine if a single line is a token or not.
    * Return `true` for for tokens, and `false` for non-tokens.
    */
-  evaluateToken?: (line: string) => boolean;
+  evaluateToken?: (line: string, file: string) => boolean;
 };
 
 type StyleObject = {
