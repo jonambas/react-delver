@@ -1,6 +1,6 @@
 {
   "name": "@delver/cli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "type": "module",
   "bin": {
@@ -17,9 +17,9 @@
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
   "dependencies": {
-    "@delver/css": "^0.0.7",
-    "@delver/logger": "^0.0.7",
-    "@delver/react": "^0.0.7",
+    "@delver/css": "^0.0.8",
+    "@delver/logger": "^0.0.8",
+    "@delver/react": "^0.0.8",
     "find-up": "^6.3.0",
     "fs-extra": "^10.0.1",
     "glob-promise": "^4.2.2",
