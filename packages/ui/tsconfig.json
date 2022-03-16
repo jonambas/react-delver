@@ -1,12 +1,11 @@
 {
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.tsx"],
   "exclude": ["dist", "node_modules", "**/tests/*.ts"],
   "compilerOptions": {
     "baseUrl": ".",
     "target": "ES6",
     "module": "ES2022",
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "jsx": "react",
     "moduleResolution": "node",
     "strict": true,
     "emitDeclarationOnly": true,

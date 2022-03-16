@@ -28,7 +28,11 @@ export default {
     'glob-promise',
     '@delver/logger',
     '@delver/react',
-    '@delver/css'
+    '@delver/css',
+    '@delver/ui',
+    'webpack',
+    'webpack-dev-server',
+    'open'
   ],
   output: [
     {

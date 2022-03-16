@@ -1,8 +1,11 @@
 import meow from 'meow';
 import chalk from 'chalk';
 import { findUp } from 'find-up';
-import { logMuted, logInfo } from '@delver/logger';
-import { lib } from '../lib/lib';
+import { logMuted, logInfo } from '../lib/logger';
+import { lib } from '../lib/index';
+import type { UserConfig } from '../types';
+
+export type DelverConfig = UserConfig;
 
 const cli = meow(
   `
@@ -63,8 +66,7 @@ async function delve(
   const delve = lib(config);
 
   if (delve.hasOwnProperty(command)) {
-    await delve[command as 'react' | 'css']();
-    process.exit(0);
+    await delve[command as 'react' | 'css' | 'ui']();
   } else {
     logInfo(`Command '${command}' not found.`);
     cli.showHelp();

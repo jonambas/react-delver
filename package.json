@@ -2,12 +2,12 @@
   "name": "delver-workspace",
   "version": "0.0.1",
   "description": "",
+  "type": "module",
   "workspaces": [
-    "packages/logger",
     "packages/cli",
     "packages/react",
     "packages/css",
-    "packages/example"
+    "packages/ui"
   ],
   "scripts": {
     "build": "turbo run build",

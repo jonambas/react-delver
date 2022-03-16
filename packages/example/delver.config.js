@@ -1,4 +1,5 @@
-export default {
+/** @type {import("@delver/cli").DelverConfig } */
+module.exports = {
   react: {
     output: 'dist/react.json',
     include: 'src/**/!(*.test|*.spec).@(js|ts)?(x)'

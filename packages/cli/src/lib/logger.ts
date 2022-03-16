@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 process.env.FORCE_COLOR = 'true';
 const isTest = process.env.NODE_ENV === 'test';
-const prefix = `${chalk.gray('delver →')}`;
+const prefix = `${chalk.gray('[delver] →')}`;
 
 /**
  * Console logs a red error message
@@ -34,6 +34,6 @@ export function logMuted(message: string) {
  */
 export function logSuccess(message: string) {
   if (!isTest) {
-    console.log(`${prefix} ${chalk.green(message)}`);
+    console.log(`${prefix} ${chalk.greenBright(message)}`);
   }
 }

@@ -1,16 +1,14 @@
 {
   "packages": [
     "packages/cli",
-    "packages/logger",
     "packages/react",
-    "packages/css"
+    "packages/css",
+    "packages/ui"
   ],
   "version": "0.0.9",
   "command": {
     "bootstrap": {
-      "npmClientArgs": [
-        "--no-package-lock"
-      ]
+      "npmClientArgs": ["--no-package-lock"]
     },
     "version": {
       "message": "Publish %s"

@@ -2,19 +2,16 @@
   "name": "react-delver-example",
   "version": "0.0.1",
   "description": "",
-  "type": "module",
   "scripts": {
+    "start:ui": "delve ui",
     "start:react": "delve react && npm run format",
     "start:css": "delve css && npm run format",
     "format": "prettier --write \"dist/*.json\""
   },
   "author": "Jon Ambas <jon@jonambas.com>",
   "license": "MIT",
-  "dependencies": {
-    "@delver/cli": "../cli",
-    "@delver/react": "../react"
-  },
   "devDependencies": {
+    "@delver/cli": "../cli",
     "prettier": "^2.5.1"
   }
 }
