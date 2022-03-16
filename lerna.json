@@ -5,10 +5,12 @@
     "packages/css",
     "packages/ui"
   ],
-  "version": "0.0.9",
+  "version": "0.0.10",
   "command": {
     "bootstrap": {
-      "npmClientArgs": ["--no-package-lock"]
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
     },
     "version": {
       "message": "Publish %s"
