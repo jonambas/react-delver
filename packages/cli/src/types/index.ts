@@ -8,6 +8,7 @@ export type UserConfig = {
     ignore?: string | string[];
     ignoreSubComponents?: boolean;
     raw?: boolean;
+    expressionLength?: number;
   };
   /**
    * CSS parser config object
@@ -37,6 +38,7 @@ export type Config = {
     ignore?: string | string[];
     ignoreSubComponents?: boolean;
     raw: boolean;
+    expressionLength: number;
   };
   css: {
     output: string;

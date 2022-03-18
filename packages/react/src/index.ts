@@ -12,6 +12,7 @@ type NotRaw = {
 export type Config = {
   from?: string[];
   ignoreSubComponents?: boolean;
+  expressionLength?: number;
 };
 
 export type Props = {
@@ -228,7 +229,7 @@ function parse(
                 .replace(/\s+/g, ' ');
 
               // Keep only first 100 characters
-              const max = 40;
+              const max = config?.expressionLength ?? 40;
               value =
                 clean.length > max
                   ? `Expression(${clean.substring(0, max)}...)`

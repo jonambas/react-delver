@@ -13,6 +13,7 @@ function makeDefaultConfig(config: UserConfig): Config {
       include: 'src/**/!(*.test|*.spec).@(js|ts)?(x)',
       ignoreSubComponents: false,
       raw: false,
+      expressionLength: 40,
       ...config.react
     },
     css: {
