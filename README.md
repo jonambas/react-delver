@@ -1,8 +1,8 @@
 # react-delver
 
-`react-delver` is a design system analysis tool. Delver provides a CLI, Node API, and a standalone environment that can be used or deployed with your component or design system documentation.
+`react-delver` is a design system analysis tool and provides a Node API to analyze your app's JSX.
 
-`react-delver` can parse JSX, and will turn:
+`react-delver` will turn:
 
 ```js
 function App() {
@@ -55,82 +55,23 @@ into this:
 
 ---
 
-## CLI Usage
-
-Install via the command line:
+## Node API
 
 ```bash
-npm i @delver/cli --save-dev
-```
-
-Then, configure options by creating a `delver.config.js` file to the root directory of your project:
-
-```js
-export default {
-  react: {
-    // Output path of the results.
-    output: 'dist/react.json',
-
-    // Glob pattern of which files to target
-    include: 'src/**/!(*.test|*.spec).@(js|ts)?(x)'
-
-    // Whether to report subcomponents or not
-    // When true, `<Foo.Bar />` will be ignored, but `<Foo />` will be included
-    ignoreSubComponents: false,
-
-    // If included, only report components imported from this list of packages
-    // Omitting this will bypass this check
-    from: ['package/a']
-  },
-  css: {
-    // Output path of the results.
-    output: 'dist/css.json',
-
-    // Glob pattern of which files to target
-    include: 'src/**/*.?(s)css',
-
-    // Array of CSS properties to include
-    properties: ['color', 'background', 'background-color', 'fill', 'stroke']
-
-    // Pass in a custom design token evaluator
-    // By default, all CSS and SCSS variables will be treated as tokens
-    // Returning `true` will mark this line as a token in results
-    evaluateToken: (line: string, file: string) => boolean
-  }
-};
-```
-
-And finally, run `react-delve`:
-
-```bash
-# Runs the React parser
-delve react
-
-# Runs the CSS parser
-delve css
-```
-
-## `@delver/react` Node Usage
-
-Delver offers a Node API
-
-```bash
-npm i @delver/react --save-dev
+npm i react-delver --save-dev
 ```
 
 ```js
-import { parseReact } from '@delver/react';
+import delve from '@delver/react';
 
-const results = parseReact(files, options);
+const results = delve(options);
 ```
 
-### `files`
+#### `options.include`
 
-Type: `string[]`
+Type: `string | string[]`
 
-Array of file paths to parse.
-
-### `options`
+Array of globs patterns for your React code to parse.
 
 #### `options.ignoreSubComponents`
 
@@ -153,6 +94,12 @@ Whether to aggregate the results or not. When set to `false`, data will be group
 Type: `string[]`
 
 If included, only include components that are imported from this list of packages. Omitting this will bypass this check.
+
+#### `options.expressionLength`
+
+Type: `number`
+
+Truncates JS expressions detected in props to this length. Defaults to `40`.
 
 ---
 

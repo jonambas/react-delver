@@ -1,40 +1,68 @@
 import ts from 'typescript';
 import fs from 'fs';
+import fg from 'fast-glob';
 
 type Raw = {
+  /**
+   * Components will not be grouped by their name if set to `true`
+   */
   raw: true;
 };
 
 type NotRaw = {
+  /**
+   * Components will not be grouped by their name if set to `true`
+   */
   raw?: false;
 };
 
-export type Config = {
-  from?: string[];
+type Options = {
+  /**
+   * Glob pattern(s) to include
+   */
+  include: string | Array<string>;
+  /**
+   * Only include components from these imports
+   * @example ['src/components', '@my/library']
+   */
+  from?: Array<string>;
+  /**
+   * Ignores sub-components if true, eg `<Foo.Bar />`
+   */
   ignoreSubComponents?: boolean;
+  /**
+   * Truncates JS expressions in props to this length
+   * @default 40
+   */
   expressionLength?: number;
+  /**
+   * Components will not be grouped by their name if set to `true`
+   * @default false
+   */
+  raw?: boolean;
 };
 
-export type Props = {
+type Props = Array<{
   value: string | boolean | number;
   name: string;
-}[];
+}>;
 
-export type RawResult = {
+type RawResult = {
   name: string;
-  spread?: boolean;
-  props?: Props;
-  count?: number;
+  spread: boolean;
+  props: Props;
   from?: string;
-  location?: ts.LineAndCharacter & {
-    file?: string;
+  location: {
+    file: string;
+    line: number;
+    character: number;
   };
 };
 
-export type ProcessedResult = {
+type ProcessedResult = {
   name: string;
   count: number;
-  instances: RawResult[];
+  instances: Array<RawResult>;
 };
 
 type JSXNode = ts.Node & {
@@ -48,10 +76,10 @@ type ImportNode = ts.Node & {
   moduleSpecifier?: ts.StringLiteral;
 };
 
-type Imports = {
+type Imports = Array<{
   line: string;
   package?: string;
-}[];
+}>;
 
 function getLoc(node: ts.Node, source: ts.SourceFile) {
   return ts.getLineAndCharacterOfPosition(
@@ -134,7 +162,9 @@ function shouldReport({
   return true;
 }
 
-function processResults(results: RawResult[]): ProcessedResult[] {
+function processResults(
+  results: Array<RawResult>
+): Array<ProcessedResult> {
   const processed = results.reduce((acc = [], item) => {
     const index = acc.findIndex((n) => n.name === item.name);
 
@@ -151,19 +181,15 @@ function processResults(results: RawResult[]): ProcessedResult[] {
     });
 
     return acc;
-  }, [] as ProcessedResult[]);
+  }, [] as Array<ProcessedResult>);
 
   return processed;
 }
 
 // Storage
-const data: RawResult[] = [];
+const data: Array<RawResult> = [];
 
-function parse(
-  source: ts.SourceFile,
-  config: Config = {},
-  file: string
-) {
+function parse(source: ts.SourceFile, config: Config, file: string) {
   const { from } = config;
   const imports: Imports = [];
 
@@ -228,7 +254,7 @@ function parse(
                 .replace('\n', ' ')
                 .replace(/\s+/g, ' ');
 
-              // Keep only first 100 characters
+              // Keep only first 40 characters
               const max = config?.expressionLength ?? 40;
               value =
                 clean.length > max
@@ -254,23 +280,26 @@ function parse(
       });
     }
 
-    ts.forEachChild(node, visit);
+    ts?.forEachChild(node, visit);
   }
 }
 
-type ReturnType<T> = T extends Raw ? RawResult[] : ProcessedResult[];
-type ConfigArgument = (Config & NotRaw) | (Config & Raw);
+type Results<T> = T extends Raw
+  ? Array<RawResult>
+  : Array<ProcessedResult>;
+
+export type Config = (Options & Raw) | (Options & NotRaw);
 
 /**
  * Analyzes files for React component usage
- * @param files - Array of strings of paths to files
- * @param config - Config options
+ * @see https://github.com/jonambas/react-delver
  */
-export function parseReact<T extends ConfigArgument = {}>(
-  files: string[],
-  config?: T
-): ReturnType<T> {
+export default function delve<TOptions extends Config>(
+  config: TOptions
+): Results<TOptions> {
   data.splice(0, data.length);
+
+  const files = fg.sync(config.include);
 
   files.forEach((file) => {
     const source = ts.createSourceFile(
@@ -282,8 +311,8 @@ export function parseReact<T extends ConfigArgument = {}>(
   });
 
   if (config?.raw) {
-    return data as ReturnType<T>;
+    return data as Results<TOptions>;
   }
 
-  return processResults(data) as ReturnType<T>;
+  return processResults(data) as Results<TOptions>;
 }

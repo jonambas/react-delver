@@ -1,8 +1,0 @@
-div {
-  position: absolute;
-  color: blue;
-  background: #000000;
-  fill: var(--color);
-  margin: 2px;
-  padding: var(--space);
-}
