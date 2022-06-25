@@ -25,7 +25,8 @@
     "prebuild": "rimraf dist",
     "build": "node scripts/build.js && tsc",
     "test": "jest --watch",
-    "test:ci": "jest"
+    "test:ci": "jest",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "fast-glob": "^3.2.11",
