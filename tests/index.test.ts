@@ -3,7 +3,7 @@ import parse from '../src';
 const inclusionGlob = './tests/inclusion.jsx';
 const propsGlob = './tests/props.jsx';
 
-describe('parseReact', () => {
+describe('parse', () => {
   describe('inclusion', () => {
     it('includes sub components', () => {
       const result = parse({
@@ -75,6 +75,18 @@ describe('parseReact', () => {
     });
   });
 
+  describe('location', () => {
+    it('returns location', () => {
+      const result = parse({
+        include: inclusionGlob,
+        raw: true
+      });
+      expect(result[0].location.line).toBe(6);
+      expect(result[0].location.character).toBe(6);
+      expect(result[0].location.file).toBe('./tests/inclusion.jsx');
+    });
+  });
+
   describe('raw processing', () => {
     it('bypasses processing', () => {
       const result = parse({
@@ -83,7 +95,6 @@ describe('parseReact', () => {
       });
       expect(result.length).toBe(4);
       expect(result[0].name).toBe('Foo');
-      expect(result[0].count).toBe(undefined);
     });
   });
 
@@ -95,6 +106,16 @@ describe('parseReact', () => {
       expect(result[0].instances[0].from).toBe('package/a');
       expect(result[1].instances[0].from).toBe('package/a');
       expect(result[2].instances[0].from).toBe('package/b');
+    });
+  });
+
+  describe('glob', () => {
+    it('collects data from multiple files', () => {
+      const result = parse({
+        include: [inclusionGlob, propsGlob],
+        raw: true
+      });
+      expect(result).toHaveLength(5);
     });
   });
 });

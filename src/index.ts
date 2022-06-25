@@ -2,7 +2,21 @@ import ts from 'typescript';
 import fs from 'fs';
 import fg from 'fast-glob';
 
-export type Config = {
+type Raw = {
+  /**
+   * Components will not be grouped by their name if set to `true`
+   */
+  raw: true;
+};
+
+type NotRaw = {
+  /**
+   * Components will not be grouped by their name if set to `true`
+   */
+  raw?: false;
+};
+
+type Options = {
   /**
    * Glob pattern(s) to include
    */
@@ -35,12 +49,13 @@ type Props = Array<{
 
 type RawResult = {
   name: string;
-  spread?: boolean;
-  props?: Props;
-  count?: number;
+  spread: boolean;
+  props: Props;
   from?: string;
-  location?: ts.LineAndCharacter & {
-    file?: string;
+  location: {
+    file: string;
+    line: number;
+    character: number;
   };
 };
 
@@ -149,7 +164,7 @@ function shouldReport({
 
 function processResults(
   results: Array<RawResult>
-): ProcessedResult[] {
+): Array<ProcessedResult> {
   const processed = results.reduce((acc = [], item) => {
     const index = acc.findIndex((n) => n.name === item.name);
 
@@ -166,7 +181,7 @@ function processResults(
     });
 
     return acc;
-  }, [] as ProcessedResult[]);
+  }, [] as Array<ProcessedResult>);
 
   return processed;
 }
@@ -265,18 +280,23 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
       });
     }
 
-    ts.forEachChild(node, visit);
+    ts?.forEachChild(node, visit);
   }
 }
 
-type Results<T> = T extends { raw: true }
+type Results<T> = T extends Raw
   ? Array<RawResult>
   : Array<ProcessedResult>;
 
+export type Config = (Options & Raw) | (Options & NotRaw);
+
 /**
  * Analyzes files for React component usage
+ * @see https://github.com/jonambas/react-delver
  */
-export default function delve<TRaw>(config: Config): Results<TRaw> {
+export default function delve<TOptions extends Config>(
+  config: TOptions
+): Results<TOptions> {
   data.splice(0, data.length);
 
   const files = fg.sync(config.include);
@@ -291,8 +311,8 @@ export default function delve<TRaw>(config: Config): Results<TRaw> {
   });
 
   if (config?.raw) {
-    return data as Results<TRaw>;
+    return data as Results<TOptions>;
   }
 
-  return processResults(data);
+  return processResults(data) as Results<TOptions>;
 }
