@@ -62,7 +62,7 @@ npm i react-delver --save-dev
 ```
 
 ```js
-import delve from '@delver/react';
+import delve from 'react-delver';
 
 const results = delve(options);
 ```
@@ -71,7 +71,7 @@ const results = delve(options);
 
 Type: `string | string[]`
 
-Array of globs patterns for your React code to parse.
+Array of globs patterns for your React code to parse. See [fast-glob](https://github.com/mrmlnc/fast-glob) for more information.
 
 #### `options.ignoreSubComponents`
 
@@ -99,7 +99,9 @@ If included, only include components that are imported from this list of package
 
 Type: `number`
 
-Truncates JS expressions detected in props to this length. Defaults to `40`.
+Default: `40`
+
+Truncates JS expressions detected in props to this length.
 
 ---
 
