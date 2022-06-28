@@ -1,12 +1,12 @@
-import parse from '../src';
+import { delve } from '../src';
 
 const inclusionGlob = './tests/inclusion.jsx';
 const propsGlob = './tests/props.jsx';
 
-describe('parse', () => {
+describe('delve', () => {
   describe('inclusion', () => {
     it('includes sub components', () => {
-      const result = parse({
+      const result = delve({
         include: inclusionGlob,
         ignoreSubComponents: false
       });
@@ -17,7 +17,7 @@ describe('parse', () => {
     });
 
     it('ignores sub components', () => {
-      const result = parse({
+      const result = delve({
         include: inclusionGlob,
         ignoreSubComponents: true
       });
@@ -27,7 +27,7 @@ describe('parse', () => {
     });
 
     it('includes only specified packages', () => {
-      const result = parse({
+      const result = delve({
         include: inclusionGlob,
         from: ['package/b']
       });
@@ -38,7 +38,7 @@ describe('parse', () => {
 
   describe('prop parser', () => {
     it('finds strings', () => {
-      const result = parse({ include: propsGlob });
+      const result = delve({ include: propsGlob });
       const props = result[0].instances[0].props || [];
 
       expect(props[0].name).toBe('string');
@@ -46,7 +46,7 @@ describe('parse', () => {
     });
 
     it('finds booleans', () => {
-      const result = parse({ include: propsGlob });
+      const result = delve({ include: propsGlob });
       const props = result[0].instances[0].props || [];
 
       expect(props[1].name).toBe('implicitTrue');
@@ -57,7 +57,7 @@ describe('parse', () => {
     });
 
     it('finds expressions', () => {
-      const result = parse({ include: propsGlob });
+      const result = delve({ include: propsGlob });
       const props = result[0].instances[0].props || [];
 
       expect(props[3].name).toBe('expression');
@@ -77,7 +77,7 @@ describe('parse', () => {
 
   describe('location', () => {
     it('returns location', () => {
-      const result = parse({
+      const result = delve({
         include: inclusionGlob,
         raw: true
       });
@@ -89,7 +89,7 @@ describe('parse', () => {
 
   describe('raw processing', () => {
     it('bypasses processing', () => {
-      const result = parse({
+      const result = delve({
         include: inclusionGlob,
         raw: true
       });
@@ -100,7 +100,7 @@ describe('parse', () => {
 
   describe('imports', () => {
     it('collects import package correctly', () => {
-      const result = parse({
+      const result = delve({
         include: inclusionGlob
       });
       expect(result[0].instances[0].from).toBe('package/a');
@@ -111,7 +111,7 @@ describe('parse', () => {
 
   describe('glob', () => {
     it('collects data from multiple files', () => {
-      const result = parse({
+      const result = delve({
         include: [inclusionGlob, propsGlob],
         raw: true
       });

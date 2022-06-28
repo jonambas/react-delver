@@ -294,7 +294,7 @@ export type Config = (Options & Raw) | (Options & NotRaw);
  * Analyzes files for React component usage
  * @see https://github.com/jonambas/react-delver
  */
-export default function delve<TOptions extends Config>(
+export function delve<TOptions extends Config>(
   config: TOptions
 ): Results<TOptions> {
   data.splice(0, data.length);
