@@ -62,7 +62,7 @@ npm i react-delver --save-dev
 ```
 
 ```js
-import delve from 'react-delver';
+const delve = require('react-delver');
 
 const results = delve(options);
 ```

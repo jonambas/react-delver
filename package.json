@@ -16,7 +16,6 @@
   "license": "MIT",
   "author": "Jon Ambas <jon@jonambas.com>",
   "main": "dist/delver.cjs.js",
-  "module": "dist/delver.esm.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"

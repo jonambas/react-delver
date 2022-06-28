@@ -16,9 +16,3 @@ esbuild.buildSync({
   format: 'cjs',
   outfile: pkg.main
 });
-
-esbuild.buildSync({
-  ...options,
-  format: 'esm',
-  outfile: pkg.module
-});
