@@ -42,12 +42,12 @@ type Options = {
   raw?: boolean;
 };
 
-type Props = Array<{
+export type Props = Array<{
   value: string | boolean | number;
   name: string;
 }>;
 
-type RawResult = {
+export type Instance = {
   name: string;
   spread: boolean;
   props: Props;
@@ -59,11 +59,14 @@ type RawResult = {
   };
 };
 
-type ProcessedResult = {
+export type Result = {
   name: string;
   count: number;
-  instances: Array<RawResult>;
+  from?: 'indeterminate' | string;
+  instances: Array<Instance>;
 };
+
+type WithoutFromResult = Omit<Result, 'from'>;
 
 type JSXNode = ts.Node & {
   tagName?: ts.JsxTagNameExpression;
@@ -162,10 +165,37 @@ function shouldReport({
   return true;
 }
 
+const withFrom = (
+  processed: Array<WithoutFromResult>
+): Array<Result> => {
+  return processed.reduce(
+    (acc = [], component: WithoutFromResult) => {
+      const { instances, ...rest } = component;
+
+      const sameFrom = instances.every((v, i, a) => {
+        if (!v.from) {
+          return false;
+        }
+        return v.from === a[0].from;
+      });
+
+      const firstFrom = instances[0].from;
+
+      acc.push({
+        ...rest,
+        instances,
+        from: sameFrom ? firstFrom : 'indeterminate'
+      });
+      return acc;
+    },
+    [] as Array<Result>
+  );
+};
+
 function processResults(
-  results: Array<RawResult>
-): Array<ProcessedResult> {
-  const processed = results.reduce((acc = [], item) => {
+  results: Array<Instance>
+): Array<WithoutFromResult> {
+  const processed = results.reduce((acc = [], item: Instance) => {
     const index = acc.findIndex((n) => n.name === item.name);
 
     if (index !== -1) {
@@ -181,13 +211,13 @@ function processResults(
     });
 
     return acc;
-  }, [] as Array<ProcessedResult>);
+  }, [] as Array<WithoutFromResult>);
 
   return processed;
 }
 
 // Storage
-const data: Array<RawResult> = [];
+const data: Array<Instance> = [];
 
 function parse(source: ts.SourceFile, config: Config, file: string) {
   const { from } = config;
@@ -284,9 +314,7 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
   }
 }
 
-type Results<T> = T extends Raw
-  ? Array<RawResult>
-  : Array<ProcessedResult>;
+type Results<T> = T extends Raw ? Array<Instance> : Array<Result>;
 
 export type Config = (Options & Raw) | (Options & NotRaw);
 
@@ -314,5 +342,5 @@ export function delve<TOptions extends Config>(
     return data as Results<TOptions>;
   }
 
-  return processResults(data) as Results<TOptions>;
+  return withFrom(processResults(data)) as Results<TOptions>;
 }

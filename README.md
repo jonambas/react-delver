@@ -21,6 +21,7 @@ into this:
   {
     "name": "Bar",
     "count": 1,
+    "from": "src/file.js",
     "instances": [
       {
         "name": "Bar",
@@ -37,6 +38,7 @@ into this:
   {
     "name": "Foo",
     "count": 1,
+    "from": "src/file.js",
     "instances": [
       {
         "name": "Foo",
@@ -67,6 +69,40 @@ const { delve } = require('react-delver');
 const results = delve(options);
 ```
 
+<details><summary>Result Type Definitions</summary>
+<p>
+
+```ts
+type Props = Array<{
+  value: string | boolean | number;
+  name: string;
+}>;
+
+type Instance = {
+  name: string;
+  spread: boolean;
+  props: Props;
+  from?: string;
+  location: {
+    file: string;
+    line: number;
+    character: number;
+  };
+};
+
+type Result = {
+  name: string;
+  count: number;
+  from?: 'indeterminate' | string;
+  instances: Array<Instance>;
+};
+
+type Results = Array<Result>;
+```
+
+</p>
+</details>
+
 #### `options.include`
 
 Type: `string | string[]`
@@ -87,7 +123,13 @@ Type: `boolean`
 
 Default: `false`
 
-Whether to aggregate the results or not. When set to `false`, data will be grouped by component display name and include component `count`. When set to `true`, data will include an array of every component instance.
+Whether to aggregate the results or not. When set to `true`, data will not be a flat array of all component instances.
+
+When set to `false`, data will be grouped by component name and include `count` and `from`. `count` is the total number of component instances. `from` will be either:
+
+- `string` - all component instances were imported from the same package
+- `'indeterminate'` - component instances do not share the same import path or package
+- `undefined` - all component instances were not imported at all
 
 #### `options.from`
 
