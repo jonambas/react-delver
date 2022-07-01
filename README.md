@@ -109,6 +109,8 @@ Type: `string | string[]`
 
 Array of globs patterns for your React code to parse. See [fast-glob](https://github.com/mrmlnc/fast-glob) for more information.
 
+The node API does not exlude any directories by default, so you may want to specify commonly ignored directories, like `'!**/node_modules'` or `'!**/dist'`.
+
 #### `options.ignoreSubComponents`
 
 Type: `boolean`
