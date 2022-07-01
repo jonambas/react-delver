@@ -123,7 +123,7 @@ Type: `boolean`
 
 Default: `false`
 
-Whether to aggregate the results or not. When set to `true`, data will not be a flat array of all component instances.
+Whether to aggregate the results or not. When set to `true`, data will be a flat array of all component instances.
 
 When set to `false`, data will be grouped by component name and include `count` and `from`. `count` is the total number of component instances. `from` will be either:
 
