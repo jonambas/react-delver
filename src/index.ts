@@ -45,6 +45,7 @@ type Options = {
 export type Props = Array<{
   value: string | boolean | number;
   name: string;
+  expression: boolean;
 }>;
 
 export type Instance = {
@@ -246,6 +247,7 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
       let value: string | number | boolean;
       let toSave: Props = [];
       let spread = false;
+      let expression = false;
 
       props.forEach((prop) => {
         if (isNodeSpread(prop)) {
@@ -259,13 +261,16 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
         if (!initializer) {
           // Implicit boolean prop set to true
           value = true;
+          expression = true;
         } else {
           // Includes strings
           if (ts.isStringLiteral(initializer)) {
             value = initializer.text;
+            expression = false;
           }
 
           if (ts.isJsxExpression(initializer)) {
+            expression = true;
             // Numbers
             if (
               initializer.expression &&
@@ -298,7 +303,7 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
             }
           }
         }
-        toSave.push({ value, name: propName });
+        toSave.push({ value, name: propName, expression });
       });
 
       data.push({

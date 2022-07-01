@@ -43,6 +43,7 @@ describe('delve', () => {
 
       expect(props[0].name).toBe('string');
       expect(props[0].value).toBe('string');
+      expect(props[0].expression).toBe(false);
     });
 
     it('finds booleans', () => {
@@ -51,9 +52,11 @@ describe('delve', () => {
 
       expect(props[1].name).toBe('implicitTrue');
       expect(props[1].value).toBe(true);
+      expect(props[1].expression).toBe(true);
 
       expect(props[2].name).toBe('false');
       expect(props[2].value).toBe(false);
+      expect(props[2].expression).toBe(true);
     });
 
     it('finds expressions', () => {
@@ -62,14 +65,17 @@ describe('delve', () => {
 
       expect(props[3].name).toBe('expression');
       expect(props[3].value).toBe(`() => { console.log('test'); }`);
+      expect(props[3].expression).toBe(true);
 
       expect(props[4].name).toBe('longExpression');
       expect(props[4].value).toBe(
         `() => { console.log('Lorem ipsum dolor s...`
       );
+      expect(props[4].expression).toBe(true);
 
       expect(props[5].name).toBe('number');
       expect(props[5].value).toBe('1');
+      expect(props[5].expression).toBe(true);
     });
   });
 
