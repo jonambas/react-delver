@@ -61,13 +61,11 @@ describe('delve', () => {
       const props = result[0].instances[0].props || [];
 
       expect(props[3].name).toBe('expression');
-      expect(props[3].value).toBe(
-        `Expression(() => { console.log('test'); })`
-      );
+      expect(props[3].value).toBe(`() => { console.log('test'); }`);
 
       expect(props[4].name).toBe('longExpression');
       expect(props[4].value).toBe(
-        `Expression(() => { console.log('Lorem ipsum dolor s...)`
+        `() => { console.log('Lorem ipsum dolor s...`
       );
 
       expect(props[5].name).toBe('number');

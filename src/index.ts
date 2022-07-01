@@ -288,11 +288,11 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
               const max = config?.expressionLength ?? 40;
               value =
                 clean.length > max
-                  ? `Expression(${clean.substring(0, max)}...)`
-                  : `Expression(${clean})`;
+                  ? `${clean.substring(0, max)}...`
+                  : `${clean}`;
 
               // For some reason I cant check for ts.FalseKeyword
-              if (value === 'Expression(false)') {
+              if (value === 'false') {
                 value = false;
               }
             }
