@@ -66,7 +66,7 @@ npm i react-delver --save-dev
 ```js
 const { delve } = require('react-delver');
 
-const results = delve(options);
+const results = delve({ include: 'src/**/*.{jsx,tsx,js,ts}' });
 ```
 
 <details><summary>Result Type Definitions</summary>
