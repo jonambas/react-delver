@@ -42,11 +42,13 @@ type Options = {
   raw?: boolean;
 };
 
-export type Props = Array<{
-  value: string | boolean | number;
+type Prop = {
+  value: string | boolean | number | null | undefined;
   name: string;
   expression: boolean;
-}>;
+};
+
+export type Props = Array<Prop>;
 
 export type Instance = {
   name: string;
@@ -194,7 +196,7 @@ const withFrom = (
   );
 };
 
-function processResults(
+function groupByName(
   results: Array<Instance>
 ): Array<WithoutFromResult> {
   const processed = results.reduce((acc = [], item: Instance) => {
@@ -218,11 +220,77 @@ function processResults(
   return processed;
 }
 
+function getPropInfo(
+  prop: ts.JsxAttribute,
+  source: ts.SourceFile,
+  expressionLength: Config['expressionLength'] = 40
+): { value: Prop['value']; expression: Prop['expression'] } {
+  const initializer = prop.initializer;
+
+  // Implicit boolean prop set to true
+  if (!initializer) {
+    return {
+      value: true,
+      expression: true
+    };
+  }
+
+  // Includes strings
+  if (ts.isStringLiteral(initializer)) {
+    return {
+      value: initializer.text,
+      expression: false
+    };
+  }
+
+  if (initializer.expression && ts.isJsxExpression(initializer)) {
+    const kind = initializer.expression.kind;
+    let value = undefined;
+
+    if (ts.isNumericLiteral(initializer.expression)) {
+      // Numbers
+      value = initializer.expression.text;
+    } else if (kind === ts.SyntaxKind.NullKeyword) {
+      // Null
+      value = null;
+    } else if (kind === ts.SyntaxKind.FalseKeyword) {
+      // False
+      value = false;
+    } else {
+      // Everything else, variables, functions, etc
+      const parts = initializer.getText(source);
+
+      // Removes the opening and closing braces
+      const expression = parts.substring(1, parts.length - 1);
+
+      // Removes line breaks and whitespace
+      const clean = expression
+        .replace('\n', ' ')
+        .replace(/\s+/g, ' ');
+
+      if (clean === 'undefined') {
+        return { value: undefined, expression: true };
+      }
+
+      // Truncate expressions to config length
+      value =
+        clean.length > expressionLength
+          ? `${clean.substring(0, expressionLength)}...`
+          : `${clean}`;
+    }
+
+    return { value, expression: true };
+  }
+
+  // If you're hitting this, I missed some cases
+  return { value: '', expression: false };
+}
+
 // Storage
 const data: Array<Instance> = [];
 
 function parse(source: ts.SourceFile, config: Config, file: string) {
-  const { from } = config;
+  const { from, expressionLength } = config;
   const imports: Imports = [];
 
   visit(source);
@@ -245,67 +313,20 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
     if (shouldReport({ node, source, config, imports })) {
       const name = getComponentName(node, source);
       const props = node?.attributes?.properties || [];
-      let value: string | number | boolean;
       let toSave: Props = [];
       let spread = false;
-      let expression = false;
 
-      props.forEach((prop) => {
+      for (let prop of props) {
         if (isNodeSpread(prop)) {
           spread = true;
-          return;
+          continue;
         }
 
-        const propName = prop?.name?.getText(source);
-        const initializer = prop.initializer;
-
-        if (!initializer) {
-          // Implicit boolean prop set to true
-          value = true;
-          expression = true;
-        } else {
-          // Includes strings
-          if (ts.isStringLiteral(initializer)) {
-            value = initializer.text;
-            expression = false;
-          }
-
-          if (ts.isJsxExpression(initializer)) {
-            expression = true;
-            // Numbers
-            if (
-              initializer.expression &&
-              ts.isNumericLiteral(initializer.expression)
-            ) {
-              value = initializer.expression.text;
-            } else {
-              // Everything else, variables, functions, etc
-              const parts = initializer.getText(source);
-
-              // Removes the opening and closing braces
-              const expression = parts.substring(1, parts.length - 1);
-
-              // Removes line breaks and whitespace
-              const clean = expression
-                .replace('\n', ' ')
-                .replace(/\s+/g, ' ');
-
-              // Keep only first 40 characters
-              const max = config?.expressionLength ?? 40;
-              value =
-                clean.length > max
-                  ? `${clean.substring(0, max)}...`
-                  : `${clean}`;
-
-              // For some reason I cant check for ts.FalseKeyword
-              if (value === 'false') {
-                value = false;
-              }
-            }
-          }
-        }
-        toSave.push({ value, name: propName, expression });
-      });
+        toSave.push({
+          name: prop.name.getText(source),
+          ...getPropInfo(prop, source, expressionLength)
+        });
+      }
 
       data.push({
         name,
@@ -316,7 +337,7 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
       });
     }
 
-    ts?.forEachChild(node, visit);
+    ts.forEachChild(node, visit);
   }
 }
 
@@ -335,18 +356,18 @@ export function delve<TOptions extends Config>(
 
   const files = fg.sync(config.include);
 
-  files.forEach((file) => {
+  for (const file of files) {
     const source = ts.createSourceFile(
       file,
       fs.readFileSync(file).toString(),
-      ts.ScriptTarget.ES2015
+      ts.ScriptTarget.ESNext
     );
     parse(source, config, file);
-  });
+  }
 
   if (config?.raw) {
     return data as Results<TOptions>;
   }
 
-  return withFrom(processResults(data)) as Results<TOptions>;
+  return withFrom(groupByName(data)) as Results<TOptions>;
 }

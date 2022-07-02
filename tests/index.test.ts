@@ -41,7 +41,7 @@ describe('delve', () => {
   describe('prop parser', () => {
     it('finds strings', () => {
       const result = delve({ include: propsGlob });
-      const props = result[0].instances[0].props || [];
+      const props = result[0].instances[0].props;
 
       expect(props[0].name).toBe('string');
       expect(props[0].value).toBe('string');
@@ -50,7 +50,7 @@ describe('delve', () => {
 
     it('finds booleans', () => {
       const result = delve({ include: propsGlob });
-      const props = result[0].instances[0].props || [];
+      const props = result[0].instances[0].props;
 
       expect(props[1].name).toBe('implicitTrue');
       expect(props[1].value).toBe(true);
@@ -63,7 +63,7 @@ describe('delve', () => {
 
     it('finds expressions', () => {
       const result = delve({ include: propsGlob });
-      const props = result[0].instances[0].props || [];
+      const props = result[0].instances[0].props;
 
       expect(props[3].name).toBe('expression');
       expect(props[3].value).toBe(`() => { console.log('test'); }`);
@@ -78,6 +78,24 @@ describe('delve', () => {
       expect(props[5].name).toBe('number');
       expect(props[5].value).toBe('1');
       expect(props[5].expression).toBe(true);
+
+      expect(props[6].name).toBe('null');
+      expect(props[6].value).toBeNull();
+      expect(props[6].expression).toBe(true);
+
+      expect(props[7].name).toBe('undefined');
+      expect(props[7].value).toBeUndefined();
+      expect(props[7].expression).toBe(true);
+    });
+
+    it('truncates', () => {
+      const result = delve({
+        include: propsGlob,
+        expressionLength: 1
+      });
+      const props = result[0].instances[0].props;
+      expect(props[4].name).toBe('longExpression');
+      expect(props[4].value).toBe(`(...`);
     });
   });
 

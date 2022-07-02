@@ -12,6 +12,8 @@ function Component() {
           console.log('Lorem ipsum dolor sit amet');
         }}
         number={1}
+        null={null}
+        undefined={undefined}
       />
     </>
   );
