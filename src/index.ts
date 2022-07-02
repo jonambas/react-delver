@@ -92,9 +92,16 @@ function getLoc(node: ts.Node, source: ts.SourceFile) {
   );
 }
 
-function getFrom(name: string, imports: Imports) {
+function isComponentInLine(name: string, line: string) {
   const [main, ...r] = name.split('.');
-  const importObj = imports.find(({ line }) => line.includes(main));
+  return line.match(`\\b${main}\\b`);
+}
+
+function getFrom(name: string, imports: Imports) {
+  const importObj = imports.find(({ line }) =>
+    isComponentInLine(name, line)
+  );
+
   return importObj?.package;
 }
 
@@ -158,7 +165,7 @@ function shouldReport({
   // Check if this component is in stored imports
   if (
     config.from &&
-    !imports.some(({ line }) => line.includes(name))
+    !imports.some(({ line }) => isComponentInLine(name, line))
   ) {
     return false;
   }
@@ -173,14 +180,8 @@ const withFrom = (
     (acc = [], component: WithoutFromResult) => {
       const { instances, ...rest } = component;
 
-      const sameFrom = instances.every((v, i, a) => {
-        if (!v.from) {
-          return false;
-        }
-        return v.from === a[0].from;
-      });
-
       const firstFrom = instances[0].from;
+      const sameFrom = instances.every((v) => v.from === firstFrom);
 
       acc.push({
         ...rest,

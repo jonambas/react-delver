@@ -1,7 +1,9 @@
 import { delve } from '../src';
 
-const inclusionGlob = './tests/inclusion.jsx';
-const propsGlob = './tests/props.jsx';
+const inclusionGlob = './tests/files/inclusion.jsx';
+const propsGlob = './tests/files/props.jsx';
+const from1Glob = './tests/files/from1.jsx';
+const from2Glob = './tests/files/from2.jsx';
 
 describe('delve', () => {
   describe('inclusion', () => {
@@ -87,7 +89,9 @@ describe('delve', () => {
       });
       expect(result[0].location.line).toBe(6);
       expect(result[0].location.character).toBe(6);
-      expect(result[0].location.file).toBe('./tests/inclusion.jsx');
+      expect(result[0].location.file).toBe(
+        './tests/files/inclusion.jsx'
+      );
     });
   });
 
@@ -103,7 +107,7 @@ describe('delve', () => {
   });
 
   describe('imports', () => {
-    it('collects import package correctly', () => {
+    it('collects instance imports correctly', () => {
       const result = delve({
         include: inclusionGlob
       });
@@ -111,15 +115,22 @@ describe('delve', () => {
       expect(result[1].instances[0].from).toBe('package/a');
       expect(result[2].instances[0].from).toBe('package/b');
     });
-  });
 
-  describe('glob', () => {
-    it('collects data from multiple files', () => {
+    it('collects aggregated imports correctly', () => {
       const result = delve({
-        include: [inclusionGlob, propsGlob],
-        raw: true
+        include: [from1Glob, from2Glob]
       });
-      expect(result).toHaveLength(5);
+      expect(result[0].from).toBe('package/a');
+      expect(result[0].name).toBe('SameFrom');
+
+      expect(result[1].from).toBe('indeterminate');
+      expect(result[1].name).toBe('DiffFrom');
+
+      expect(result[2].from).toBeUndefined();
+      expect(result[2].name).toBe('NoFrom');
+
+      expect(result[3].from).toBe('indeterminate');
+      expect(result[3].name).toBe('DiffNoFrom');
     });
   });
 });
