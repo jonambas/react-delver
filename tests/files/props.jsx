@@ -15,6 +15,7 @@ function Component() {
         null={null}
         undefined={undefined}
         explicitTrue={true}
+        float={0.5}
       />
     </>
   );

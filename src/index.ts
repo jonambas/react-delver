@@ -45,6 +45,7 @@ type Options = {
 type Prop = {
   value: string | boolean | number | null | undefined;
   name: string;
+  expression: boolean;
 };
 
 export type Props = Array<Prop>;
@@ -241,7 +242,7 @@ function getPropValue(
 
     if (ts.isNumericLiteral(initializer.expression)) {
       // Numbers
-      return initializer.expression.text;
+      return Number(initializer.expression.text);
     } else if (kind === ts.SyntaxKind.NullKeyword) {
       // Null
       return null;
@@ -276,6 +277,19 @@ function getPropValue(
 
   // If you're hitting this, I missed some cases
   return '';
+}
+
+function getIsExpression(prop: ts.JsxAttribute): boolean {
+  const initializer = prop.initializer;
+  if (
+    initializer &&
+    !ts.isStringLiteral(initializer) &&
+    initializer.expression &&
+    ts.isJsxExpression(initializer)
+  ) {
+    return true;
+  }
+  return false;
 }
 
 // Storage
@@ -316,7 +330,8 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
 
         toSave.push({
           name: prop.name.getText(source),
-          value: getPropValue(prop, source, expressionLength)
+          value: getPropValue(prop, source, expressionLength),
+          expression: getIsExpression(prop)
         });
       }
 
