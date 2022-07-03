@@ -122,7 +122,7 @@ Type: `boolean`
 
 Default: `false`
 
-Whether to include subcomponents or not. For example, when set to `true`, `<Foo.Bar />` will be ignored, but `<Foo />` will be included.
+Whether to include subcomponents or not. For example, when set to `true`, `<Foo.Bar />` will be ignored.
 
 #### `options.raw`
 
@@ -142,7 +142,7 @@ When set to `false`, data will be grouped by component name and include `count` 
 
 Type: `string[]`
 
-If included, only include components that are imported from this list of packages. Omitting this will bypass this check.
+If included, only include components that are imported from this list of packages. For example, if you only want to include components imported from `@src/components`, use `from: ['@src/components']`.
 
 #### `options.expressionLength`
 
