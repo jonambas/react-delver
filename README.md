@@ -78,7 +78,7 @@ const results = delve({ include: 'src/**/*.{jsx,tsx,js,ts}' });
 
 ```ts
 type Props = Array<{
-  value: string | boolean | number;
+  value: string | boolean | number | null | undefined;
   name: string;
   expression: boolean;
 }>;
@@ -87,7 +87,7 @@ type Instance = {
   name: string;
   spread: boolean;
   props: Props;
-  from?: string;
+  from: string | undefined;
   location: {
     file: string;
     line: number;
@@ -98,7 +98,7 @@ type Instance = {
 type Result = {
   name: string;
   count: number;
-  from?: 'indeterminate' | string;
+  from: 'indeterminate' | string | undefined;
   instances: Array<Instance>;
 };
 
