@@ -86,6 +86,10 @@ describe('delve', () => {
       expect(props[7].name).toBe('undefined');
       expect(props[7].value).toBeUndefined();
       expect(props[7].expression).toBe(true);
+
+      expect(props[8].name).toBe('explicitTrue');
+      expect(props[8].value).toBe(true);
+      expect(props[8].expression).toBe(true);
     });
 
     it('truncates', () => {

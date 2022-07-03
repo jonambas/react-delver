@@ -256,6 +256,9 @@ function getPropInfo(
     } else if (kind === ts.SyntaxKind.FalseKeyword) {
       // False
       value = false;
+    } else if (kind === ts.SyntaxKind.TrueKeyword) {
+      // Explicit
+      value = true;
     } else {
       // Everything else, variables, functions, etc
       const parts = initializer.getText(source);

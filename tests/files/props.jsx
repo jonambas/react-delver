@@ -14,6 +14,7 @@ function Component() {
         number={1}
         null={null}
         undefined={undefined}
+        explicitTrue={true}
       />
     </>
   );
