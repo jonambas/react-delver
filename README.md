@@ -26,9 +26,7 @@ into this:
       {
         "name": "Bar",
         "spread": false,
-        "props": [
-          { "value": true, "name": "foo", "expression": true }
-        ],
+        "props": [{ "value": true, "name": "foo" }],
         "location": {
           "file": "src/file.js",
           "line": 8,
@@ -45,9 +43,7 @@ into this:
       {
         "name": "Foo",
         "spread": false,
-        "props": [
-          { "value": "baz", "name": "bar", "expression": false }
-        ],
+        "props": [{ "value": "baz", "name": "bar" }],
         "location": {
           "file": "src/file.js",
           "line": 7,
@@ -80,7 +76,6 @@ const results = delve({ include: 'src/**/*.{jsx,tsx,js,ts}' });
 type Props = Array<{
   value: string | boolean | number | null | undefined;
   name: string;
-  expression: boolean;
 }>;
 
 type Instance = {

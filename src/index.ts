@@ -45,7 +45,6 @@ type Options = {
 type Prop = {
   value: string | boolean | number | null | undefined;
   name: string;
-  expression: boolean;
 };
 
 export type Props = Array<Prop>;
@@ -220,45 +219,38 @@ function groupByName(
   return processed;
 }
 
-function getPropInfo(
+function getPropValue(
   prop: ts.JsxAttribute,
   source: ts.SourceFile,
   expressionLength: Config['expressionLength'] = 40
-): { value: Prop['value']; expression: Prop['expression'] } {
+): Prop['value'] {
   const initializer = prop.initializer;
 
   // Implicit boolean prop set to true
   if (!initializer) {
-    return {
-      value: true,
-      expression: true
-    };
+    return true;
   }
 
   // Includes strings
   if (ts.isStringLiteral(initializer)) {
-    return {
-      value: initializer.text,
-      expression: false
-    };
+    return initializer.text;
   }
 
   if (initializer.expression && ts.isJsxExpression(initializer)) {
     const kind = initializer.expression.kind;
-    let value = undefined;
 
     if (ts.isNumericLiteral(initializer.expression)) {
       // Numbers
-      value = initializer.expression.text;
+      return initializer.expression.text;
     } else if (kind === ts.SyntaxKind.NullKeyword) {
       // Null
-      value = null;
+      return null;
     } else if (kind === ts.SyntaxKind.FalseKeyword) {
       // False
-      value = false;
+      return false;
     } else if (kind === ts.SyntaxKind.TrueKeyword) {
       // Explicit
-      value = true;
+      return true;
     } else {
       // Everything else, variables, functions, etc
       const parts = initializer.getText(source);
@@ -272,21 +264,18 @@ function getPropInfo(
         .replace(/\s+/g, ' ');
 
       if (clean === 'undefined') {
-        return { value: undefined, expression: true };
+        return undefined;
       }
 
       // Truncate expressions to config length
-      value =
-        clean.length > expressionLength
-          ? `${clean.substring(0, expressionLength)}...`
-          : `${clean}`;
+      return clean.length > expressionLength
+        ? `${clean.substring(0, expressionLength)}...`
+        : `${clean}`;
     }
-
-    return { value, expression: true };
   }
 
   // If you're hitting this, I missed some cases
-  return { value: '', expression: false };
+  return '';
 }
 
 // Storage
@@ -327,7 +316,7 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
 
         toSave.push({
           name: prop.name.getText(source),
-          ...getPropInfo(prop, source, expressionLength)
+          value: getPropValue(prop, source, expressionLength)
         });
       }
 
