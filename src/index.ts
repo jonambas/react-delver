@@ -95,7 +95,7 @@ function getLoc(node: ts.Node, source: ts.SourceFile) {
 }
 
 function isComponentInLine(name: string, line: string) {
-  const [main, ...r] = name.split('.');
+  const [main] = name.split('.');
   return line.match(`\\b${main}\\b`);
 }
 
@@ -319,10 +319,10 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
     if (shouldReport({ node, source, config, imports })) {
       const name = getComponentName(node, source);
       const props = node?.attributes?.properties || [];
-      let toSave: Props = [];
+      const toSave: Props = [];
       let spread = false;
 
-      for (let prop of props) {
+      for (const prop of props) {
         if (isNodeSpread(prop)) {
           spread = true;
           continue;
