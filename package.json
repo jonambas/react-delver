@@ -26,8 +26,8 @@
     "test": "jest --watch",
     "test:ci": "jest",
     "prepublishOnly": "npm run build",
-    "check": "trunk check src --no-fix",
-    "check:ci": "trunk check src --ci --no-fix"
+    "lint": "eslint src --no-fix",
+    "lint:ci": "eslint src --max-warnings 0 --no-fix"
   },
   "dependencies": {
     "fast-glob": "^3.2.11",
