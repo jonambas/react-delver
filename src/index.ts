@@ -308,7 +308,10 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
       const text = getImportText(importNode, source);
 
       // Only include this import node if it is not ignored
-      if (!from || from.some((f) => text.includes(f))) {
+      if (
+        !from ||
+        from.some((f) => text.match(new RegExp(`["']${f}["']`)))
+      ) {
         imports.push({
           line: text,
           package: importNode.moduleSpecifier?.text

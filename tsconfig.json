@@ -1,6 +1,6 @@
 {
   "include": ["src/index.ts"],
-  "exclude": ["dist", "node_modules", "tests"],
+  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "baseUrl": ".",
     "target": "ES6",
