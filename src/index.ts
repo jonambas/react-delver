@@ -306,15 +306,13 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
     if (isNodeImport(node)) {
       const importNode: ImportNode = node;
       const text = getImportText(importNode, source);
+      const fromText = importNode.moduleSpecifier?.text;
 
       // Only include this import node if it is not ignored
-      if (
-        !from ||
-        from.some((f) => text.match(new RegExp(`["']${f}["']`)))
-      ) {
+      if (!from || from.some((f) => fromText === f)) {
         imports.push({
           line: text,
-          package: importNode.moduleSpecifier?.text
+          package: fromText
         });
       }
     }
