@@ -36,6 +36,16 @@ describe('delve', () => {
       expect(result[0].name).toBe('Baz');
       expect(result[0].count).toBe(1);
     });
+
+    it('includes only specified packages with similar names', () => {
+      const result = delve({
+        include: from1Glob,
+        from: ['package/a']
+      });
+      expect(result[0].count).toEqual(1);
+      expect(result[1].count).toEqual(1);
+      expect(result).toHaveLength(2);
+    });
   });
 
   describe('prop parser', () => {
@@ -157,6 +167,8 @@ describe('delve', () => {
 
       expect(result[3].from).toBe('indeterminate');
       expect(result[3].name).toBe('DiffNoFrom');
+
+      expect(result[4].from).toBe('package/a-excluded');
     });
   });
 });
