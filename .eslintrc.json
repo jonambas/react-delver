@@ -8,5 +8,5 @@
     "project": "./tsconfig.json",
     "tsconfigRootDir": "./"
   },
-  "ignorePatterns": ["tests"]
+  "ignorePatterns": ["tests", "scripts"]
 }
