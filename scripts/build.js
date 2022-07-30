@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const esbuild = require('esbuild');
+const { limitSizePlugin } = require('esbuild-plugin-limit-size');
 const pkg = require('../package.json');
 
 const options = {
@@ -11,8 +12,9 @@ const options = {
   platform: 'node'
 };
 
-esbuild.buildSync({
+esbuild.build({
   ...options,
   format: 'cjs',
-  outfile: pkg.main
+  outfile: pkg.main,
+  plugins: [limitSizePlugin(5, true)]
 });
