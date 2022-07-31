@@ -76,6 +76,7 @@ const results = delve({ include: 'src/**/*.{jsx,tsx,js,ts}' });
 type Props = Array<{
   value: string | boolean | number | null | undefined;
   name: string;
+  expression: boolean;
 }>;
 
 type Instance = {

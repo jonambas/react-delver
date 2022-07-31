@@ -2,21 +2,7 @@ import ts from 'typescript';
 import fs from 'fs';
 import fg from 'fast-glob';
 
-type Raw = {
-  /**
-   * Components will not be grouped by their name if set to `true`
-   */
-  raw: true;
-};
-
-type NotRaw = {
-  /**
-   * Components will not be grouped by their name if set to `true`
-   */
-  raw?: false;
-};
-
-type Options = {
+export type Config = {
   /**
    * Glob pattern(s) to include
    */
@@ -175,7 +161,7 @@ function shouldReport({
   return true;
 }
 
-const withFrom = (
+const processFrom = (
   processed: Array<WithoutFromResult>
 ): Array<Result> => {
   return processed.reduce(
@@ -349,17 +335,16 @@ function parse(source: ts.SourceFile, config: Config, file: string) {
   }
 }
 
-type Results<T> = T extends Raw ? Array<Instance> : Array<Result>;
-
-export type Config = (Options & Raw) | (Options & NotRaw);
+type InferRaw<T> = T extends { raw: infer V } ? V : false;
+type Results<T extends Config> = InferRaw<T> extends true
+  ? Array<Instance>
+  : Array<Result>;
 
 /**
  * Analyzes files for React component usage
  * @see https://github.com/jonambas/react-delver
  */
-export function delve<TOptions extends Config>(
-  config: TOptions
-): Results<TOptions> {
+export const delve = <TConfig extends Config>(config: TConfig) => {
   data.splice(0, data.length);
 
   const files = fg.sync(config.include);
@@ -373,9 +358,9 @@ export function delve<TOptions extends Config>(
     parse(source, config, file);
   }
 
-  if (config?.raw) {
-    return data as Results<TOptions>;
+  if (config.raw) {
+    return data as Results<TConfig>;
   }
 
-  return withFrom(groupByName(data)) as Results<TOptions>;
-}
+  return processFrom(groupByName(data)) as Results<TConfig>;
+};
