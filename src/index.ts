@@ -9,7 +9,7 @@ export type Config = {
   include: string | Array<string>;
   /**
    * Only include components from these imports
-   * @example ['src/components', '@my/library']
+   * @example `['src/components', '@my/library']`
    */
   from?: Array<string>;
   /**
@@ -29,18 +29,42 @@ export type Config = {
 };
 
 type Prop = {
+  /**
+   * Value of the prop
+   */
   value: string | boolean | number | null | undefined;
+  /**
+   * Name of the prop
+   */
   name: string;
+  /**
+   * Whether this prop is an expression or not
+   */
   expression: boolean;
 };
 
 export type Props = Array<Prop>;
 
 export type Instance = {
+  /**
+   * Name of this component instance
+   */
   name: string;
+  /**
+   * Whether props are spread on this instance or not
+   */
   spread: boolean;
+  /**
+   * Component instance props
+   */
   props: Props;
+  /**
+   * The detected package this instance was imported from
+   */
   from?: string;
+  /**
+   * File and location of this component instance
+   */
   location: {
     file: string;
     line: number;
@@ -49,9 +73,21 @@ export type Instance = {
 };
 
 export type Result = {
+  /**
+   * Component name
+   */
   name: string;
+  /**
+   * Number of component instances
+   */
   count: number;
+  /**
+   * The detected package this component was imported from
+   */
   from?: 'indeterminate' | string;
+  /**
+   * Component instances
+   */
   instances: Array<Instance>;
 };
 
@@ -223,41 +259,52 @@ function getPropValue(
     return initializer.text;
   }
 
-  if (initializer.expression && ts.isJsxExpression(initializer)) {
-    const kind = initializer.expression.kind;
-
-    if (ts.isNumericLiteral(initializer.expression)) {
+  if (initializer.kind === ts.SyntaxKind.JsxExpression) {
+    switch (initializer?.expression?.kind) {
       // Numbers
-      return Number(initializer.expression.text);
-    } else if (kind === ts.SyntaxKind.NullKeyword) {
+      case ts.SyntaxKind.NumericLiteral:
+        return Number(
+          (initializer.expression as ts.NumericLiteral).text
+        );
+
       // Null
-      return null;
-    } else if (kind === ts.SyntaxKind.FalseKeyword) {
+      case ts.SyntaxKind.NullKeyword:
+        return null;
+
       // False
-      return false;
-    } else if (kind === ts.SyntaxKind.TrueKeyword) {
-      // Explicit
-      return true;
-    } else {
-      // Everything else, variables, functions, etc
-      const parts = initializer.getText(source);
+      case ts.SyntaxKind.FalseKeyword:
+        return false;
 
-      // Removes the opening and closing braces
-      const expression = parts.substring(1, parts.length - 1);
+      // Explicit true
+      case ts.SyntaxKind.TrueKeyword:
+        return true;
 
-      // Removes line breaks and whitespace
-      const clean = expression
-        .replace('\n', ' ')
-        .replace(/\s+/g, ' ');
+      // This shouldn't happen, but just in case
+      case undefined:
+        return '';
 
-      if (clean === 'undefined') {
-        return undefined;
-      }
+      // Every other expression to be stringified
+      default:
+        const parts = initializer.getText(source);
 
-      // Truncate expressions to config length
-      return clean.length > expressionLength
-        ? `${clean.substring(0, expressionLength)}...`
-        : `${clean}`;
+        // Removes the opening and closing braces
+        const expression = parts.substring(1, parts.length - 1);
+
+        // Removes line breaks and whitespace
+        const clean = expression
+          .replace('\n', ' ')
+          .replace(/\s+/g, ' ');
+
+        if (clean === 'undefined') {
+          // Can't check ts.SyntaxKind.UndefinedKeyword
+          // initializer.expression.kind maps to 79 not 153 for some reason
+          return undefined;
+        }
+
+        // Truncate expressions to config length
+        return clean.length > expressionLength
+          ? `${clean.substring(0, expressionLength)}...`
+          : `${clean}`;
     }
   }
 
@@ -267,15 +314,11 @@ function getPropValue(
 
 function getIsExpression(prop: ts.JsxAttribute): boolean {
   const initializer = prop.initializer;
-  if (
+  return Boolean(
     initializer &&
-    !ts.isStringLiteral(initializer) &&
-    initializer.expression &&
-    ts.isJsxExpression(initializer)
-  ) {
-    return true;
-  }
-  return false;
+      !ts.isStringLiteral(initializer) &&
+      initializer.kind === ts.SyntaxKind.JsxExpression
+  );
 }
 
 // Storage
@@ -344,7 +387,9 @@ type Results<T extends Config> = InferRaw<T> extends true
  * Analyzes files for React component usage
  * @see https://github.com/jonambas/react-delver
  */
-export const delve = <TConfig extends Config>(config: TConfig) => {
+export const delve = <TConfig extends Config>(
+  config: TConfig
+): Results<TConfig> => {
   data.splice(0, data.length);
 
   const files = fg.sync(config.include);

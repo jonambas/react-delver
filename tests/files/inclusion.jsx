@@ -1,4 +1,4 @@
-import { Foo } from 'package/a';
+import { Foo, Qux } from 'package/a';
 import { Baz } from 'package/b';
 
 function Component() {
