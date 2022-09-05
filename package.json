@@ -35,8 +35,8 @@
   },
   "devDependencies": {
     "@types/jest": "28.1.8",
-    "@typescript-eslint/eslint-plugin": "5.33.0",
-    "@typescript-eslint/parser": "5.33.0",
+    "@typescript-eslint/eslint-plugin": "5.36.1",
+    "@typescript-eslint/parser": "5.36.1",
     "esbuild": "0.15.7",
     "esbuild-plugin-limit-size": "0.0.4",
     "eslint": "8.23.0",
